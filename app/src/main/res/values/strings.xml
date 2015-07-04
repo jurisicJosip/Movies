@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">MovieList</string>
+
+    <string name="top_rated">Top Rated</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="popular">Popular</string>
+    <string name="description">Description</string>
+    <string name="rating">Rating</string>
+    <string name="genre">Genre</string>
+    <string name="homepage">Homepage</string>
+    <string name="release_date">Release Date</string>
+</resources>

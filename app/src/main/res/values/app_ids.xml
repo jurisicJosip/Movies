@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="fragment_container" type="id" />
+    <item name="adapter_view" type="id" />
+
+    <item name="refresh" type="id" />
+    <item name="toolbar" type="id" />
+    <item name="tabs" type="id" />
+    <item name="webview" type="id" />
+
+    <item name="content_image" type="id" />
+    <item name="content_title" type="id" />
+    <item name="content_description" type="id" />
+    <item name="content_rating" type="id" />
+    <item name="content_date" type="id" />
+    <item name="content_genre" type="id" />
+    <item name="content_homepage" type="id" />
+    <item name="container_homepage" type="id" />
+
+</resources>

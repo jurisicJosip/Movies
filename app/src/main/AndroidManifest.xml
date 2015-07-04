@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.jjurisic.android.movielist">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Base.Theme">
+        <activity
+            android:name=".main.activity.MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".movie.details.activity.MovieDetailsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".webview.activity.WebViewActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".movie.image.activity.MoviePosterActivity"
+            android:screenOrientation="portrait" />
+    </application>
+
+</manifest>
