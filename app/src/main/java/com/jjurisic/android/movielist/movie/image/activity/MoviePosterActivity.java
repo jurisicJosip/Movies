@@ -12,13 +12,16 @@ import android.view.MenuItem;
 import com.bumptech.glide.Glide;
 import com.jjurisic.android.movielist.R;
 import com.jjurisic.android.movielist.base.BaseActivity;
+import com.jjurisic.android.movielist.movie.image.presenter.MoviePosterPresenter;
+import com.jjurisic.android.movielist.movie.image.presenter.MoviePosterPresenterImpl;
+import com.jjurisic.android.movielist.movie.image.view.MoviePosterView;
 
 import uk.co.senab.photoview.PhotoView;
 
 /**
  * Created by jurisicJosip.
  */
-public class MoviePosterActivity extends BaseActivity {
+public class MoviePosterActivity extends BaseActivity implements MoviePosterView {
 
     //Bundle keys
     private static final String KEY_MOVIE_URL = "key_movie_url";
@@ -34,6 +37,10 @@ public class MoviePosterActivity extends BaseActivity {
     //Data
     private String mMoviePosterUrl;
     private String mMovieTitle;
+
+    //Ui widgets
+    private Toolbar toolbar;
+    private PhotoView mPosterImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,16 +63,17 @@ public class MoviePosterActivity extends BaseActivity {
 
     @Override
     protected void initUi() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(mMovieTitle);
         }
 
-        PhotoView mPosterImageView = (PhotoView) findViewById(R.id.content_image);
-        Glide.with(this).load(mMoviePosterUrl).into(mPosterImageView);
+        mPosterImageView = (PhotoView) findViewById(R.id.content_image);
+
+        MoviePosterPresenter moviePosterPresenter = new MoviePosterPresenterImpl(this);
+        moviePosterPresenter.loadData(mMovieTitle, mMoviePosterUrl);
     }
 
     @Override
@@ -82,5 +90,15 @@ public class MoviePosterActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void setTitle(@Nullable String title) {
+        toolbar.setTitle(title);
+    }
+
+    @Override
+    public void setImage(@NonNull String imagePath) {
+        Glide.with(this).load(imagePath).into(mPosterImageView);
     }
 }

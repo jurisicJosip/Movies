@@ -46,7 +46,7 @@ public class GsonRequest<T> extends Request<T> {
         super(method, url, errorListener);
 
         setShouldCache(true);
-        // Wait 20 seconds and don't retry more than once
+
         setRetryPolicy(new DefaultRetryPolicy(
                 (int) TimeUnit.SECONDS.toMillis(20),
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,

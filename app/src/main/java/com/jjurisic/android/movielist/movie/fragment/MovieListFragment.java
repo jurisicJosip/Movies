@@ -1,7 +1,6 @@
 package com.jjurisic.android.movielist.movie.fragment;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,14 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jjurisic.android.core.Ballista;
-import com.jjurisic.android.core.utils.ResponseListener;
 import com.jjurisic.android.core.utils.VolleyErrorHelper;
 import com.jjurisic.android.movielist.R;
 import com.jjurisic.android.movielist.base.BaseFragment;
 import com.jjurisic.android.movielist.base.adapter.OnAdapterLastItemReachListener;
 import com.jjurisic.android.movielist.movie.adapter.MovieListAdapter;
-import com.jjurisic.android.movielist.movie.details.activity.MovieDetailsActivity;
+import com.jjurisic.android.movielist.movie.fragment.presenter.MoviesPresenter;
+import com.jjurisic.android.movielist.movie.fragment.presenter.MoviesPresenterImpl;
+import com.jjurisic.android.movielist.movie.fragment.view.MoviesView;
 import com.jjurisic.android.rest.Movie;
 import com.jjurisic.android.rest.MoviesListWrapper;
 import com.jjurisic.android.sort.MovieSortType;
@@ -29,7 +28,7 @@ import java.io.Serializable;
 /**
  * Created by jurisicJosip.
  */
-public class MovieListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, MovieListAdapter.OnMovieItemClickListener {
+public class MovieListFragment extends BaseFragment implements MoviesView, SwipeRefreshLayout.OnRefreshListener, MovieListAdapter.OnMovieItemClickListener {
 
     //Bundle keys
     private static final String KEY_MOVIE_SORT_TYPE = "key_movie_sort_type";
@@ -44,9 +43,10 @@ public class MovieListFragment extends BaseFragment implements SwipeRefreshLayou
     }
 
     //Data
+    private MoviesPresenter moviesPresenter;
     private MovieListAdapter mMoviesAdapter;
-    private int page = 1;
     private MovieSortType mMovieSortType;
+    private int page = 1;
 
     //Ui widgets
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -64,6 +64,12 @@ public class MovieListFragment extends BaseFragment implements SwipeRefreshLayou
                 }
             }
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        moviesPresenter = new MoviesPresenterImpl(this);
     }
 
     @Nullable
@@ -111,27 +117,7 @@ public class MovieListFragment extends BaseFragment implements SwipeRefreshLayou
     }
 
     private void requestMoviesFromBackend(final int page) {
-        mSwipeRefreshLayout.setRefreshing(page == 1);
-
-        Ballista.getInstance(getActivity()).requestMovies(page, mMovieSortType, new ResponseListener<MoviesListWrapper>() {
-            @Override
-            public void onResponse(MoviesListWrapper data) {
-                mSwipeRefreshLayout.setRefreshing(false);
-
-                if (page == 1) {
-                    mMoviesAdapter.setData(data.getResults());
-                    mMoviesAdapter.setTotalItems(data.getTotalItems());
-                } else {
-                    mMoviesAdapter.addData(data.getResults());
-                }
-            }
-
-            @Override
-            public void onError(Object error) {
-                mSwipeRefreshLayout.setRefreshing(false);
-                VolleyErrorHelper.handleErrorWithToast(error, getActivity());
-            }
-        });
+        moviesPresenter.requestMoviesFromBackend(getActivity(), page, mMovieSortType);
     }
 
     @Override
@@ -142,8 +128,31 @@ public class MovieListFragment extends BaseFragment implements SwipeRefreshLayou
 
     @Override
     public void onMovieItemClick(@NonNull Movie movie) {
-        Intent intent = MovieDetailsActivity.getLaunchIntent(getActivity(), movie.getId());
-        startActivity(intent);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+      moviesPresenter.onMovieItemClick(getActivity(), movie);
+    }
+
+    @Override
+    public void setMovies(@NonNull MoviesListWrapper movies) {
+        if (movies.getPage() == 1) {
+            mMoviesAdapter.setData(movies.getResults());
+            mMoviesAdapter.setTotalItems(movies.getTotalItems());
+        } else {
+            mMoviesAdapter.addData(movies.getResults());
+        }
+    }
+
+    @Override
+    public void showMessage(@NonNull Object message) {
+        VolleyErrorHelper.handleErrorWithToast(message, getActivity());
+    }
+
+    @Override
+    public void showProgress() {
+        mSwipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void hideProgress() {
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 }

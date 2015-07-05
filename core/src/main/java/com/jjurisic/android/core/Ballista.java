@@ -19,11 +19,6 @@ public class Ballista {
 
     private static Ballista instance;
 
-    private Ballista(@NonNull Context context) {
-        mContext = context.getApplicationContext();
-        mRequestQueue = Volley.newRequestQueue(context);
-    }
-
     public synchronized static Ballista getInstance(@NonNull Context context) {
         if (instance == null) {
             instance = new Ballista(context);
@@ -33,6 +28,11 @@ public class Ballista {
 
     private final Context mContext;
     private final RequestQueue mRequestQueue;
+
+    private Ballista(@NonNull Context context) {
+        mContext = context.getApplicationContext();
+        mRequestQueue = Volley.newRequestQueue(context);
+    }
 
     public void requestMovies(int page, @NonNull MovieSortType movieSortType, final ResponseListener<MoviesListWrapper> listener) {
         String apiKey = mContext.getString(R.string.moviedb_api_key);

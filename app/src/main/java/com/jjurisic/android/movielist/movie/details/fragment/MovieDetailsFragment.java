@@ -19,13 +19,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.jjurisic.android.core.Ballista;
-import com.jjurisic.android.core.utils.ResponseListener;
 import com.jjurisic.android.core.utils.VolleyErrorHelper;
 import com.jjurisic.android.movielist.R;
 import com.jjurisic.android.movielist.base.BaseFragment;
-import com.jjurisic.android.movielist.movie.image.activity.MoviePosterActivity;
-import com.jjurisic.android.movielist.webview.activity.WebViewActivity;
+import com.jjurisic.android.movielist.movie.details.presenter.MovieDetailsPresenter;
+import com.jjurisic.android.movielist.movie.details.presenter.MovieDetailsPresenterImpl;
+import com.jjurisic.android.movielist.movie.details.view.MovieDetailsView;
 import com.jjurisic.android.rest.Genre;
 import com.jjurisic.android.rest.MovieDetails;
 
@@ -34,7 +33,7 @@ import java.util.Date;
 /**
  * Created by jurisicJosip.
  */
-public class MovieDetailsFragment extends BaseFragment implements View.OnClickListener {
+public class MovieDetailsFragment extends BaseFragment implements MovieDetailsView, View.OnClickListener {
 
     //Bundle keys
     private static final String KEY_MOVIE_ID = "key_movie_id";
@@ -61,6 +60,8 @@ public class MovieDetailsFragment extends BaseFragment implements View.OnClickLi
     private TextView mDateTextView;
     private CardView mHomepageContainerView;
 
+    private MovieDetailsPresenter movieDetailsPresenter;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -73,6 +74,12 @@ public class MovieDetailsFragment extends BaseFragment implements View.OnClickLi
                 movieId = args.getLong(KEY_MOVIE_ID);
             }
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        movieDetailsPresenter = new MovieDetailsPresenterImpl(this);
     }
 
     @Override
@@ -124,65 +131,61 @@ public class MovieDetailsFragment extends BaseFragment implements View.OnClickLi
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        prepareData();
+        movieDetailsPresenter.requestMovieDetails(getActivity(), movieId);
     }
 
     @Override
     protected void prepareData() {
-        Ballista.getInstance(getActivity()).requestMovieDetails(movieId, new ResponseListener<MovieDetails>() {
-            @Override
-            public void onResponse(MovieDetails data) {
-
-                mMovieDetails = data;
-
-                collapsingToolbar.setTitle(data.getOriginalTitle());
-                mDescriptionTextView.setText(data.getOverview());
-
-                StringBuilder builder = new StringBuilder();
-                for (Genre genre : data.getGenres()) {
-                    if (!TextUtils.isEmpty(builder)) {
-                        builder.append(", ");
-                    }
-                    builder.append(genre.getName());
-                }
-
-                mGenreTextView.setText(builder.toString());
-
-                String homepage = data.getHomepage();
-                if (!TextUtils.isEmpty(homepage)) {
-                    mHomePageTextView.setText(data.getHomepage());
-                    mHomepageContainerView.setVisibility(View.VISIBLE);
-                }
-
-                Date date = data.getReleaseDate();
-                if (date != null) {
-                    CharSequence dateSequence = DateUtils.getRelativeTimeSpanString(date.getTime());
-                    mDateTextView.setText(dateSequence);
-                }
-
-                mVoteRatingTextView.setText(String.valueOf(data.getVoteAverage()));
-
-                String imageUrl = getString(R.string.backend_images_thumb_base_url) + data.getPosterPath();
-                Glide.with(MovieDetailsFragment.this).load(imageUrl).centerCrop().into(mMovieImageView);
-
-            }
-
-            @Override
-            public void onError(Object error) {
-                VolleyErrorHelper.handleErrorWithToast(error, getActivity());
-            }
-        });
     }
 
     @Override
     public void onClick(View v) {
         if (v == mHomepageContainerView) {
-            startActivity(WebViewActivity.getLaunchIntent(getActivity(), mMovieDetails.getHomepage(), mMovieDetails.getOriginalTitle()));
-            getActivity().overridePendingTransition(R.anim.bottom_up, R.anim.stay);
+            movieDetailsPresenter.onMovieHomepageClick(getActivity(), mMovieDetails.getHomepage(), mMovieDetails.getOriginalTitle());
         } else if (v == mMovieImageView) {
             String imageUrl = getString(R.string.backend_images_original_base_url) + mMovieDetails.getPosterPath();
-            startActivity(MoviePosterActivity.getLaunchIntent(getActivity(), imageUrl, mMovieDetails.getOriginalTitle()));
-            getActivity().overridePendingTransition(R.anim.bottom_up, R.anim.stay);
+            movieDetailsPresenter.onMovieImageClick(getActivity(), imageUrl, mMovieDetails.getOriginalTitle());
         }
+    }
+
+    @Override
+    public void setMovieDetails(@NonNull MovieDetails data) {
+        mMovieDetails = data;
+
+        collapsingToolbar.setTitle(data.getOriginalTitle());
+        mDescriptionTextView.setText(data.getOverview());
+
+        StringBuilder builder = new StringBuilder();
+        for (Genre genre : data.getGenres()) {
+            if (!TextUtils.isEmpty(builder)) {
+                builder.append(", ");
+            }
+            builder.append(genre.getName());
+        }
+
+        mGenreTextView.setText(builder.toString());
+
+        String homepage = data.getHomepage();
+        if (!TextUtils.isEmpty(homepage)) {
+            mHomePageTextView.setText(data.getHomepage());
+            mHomepageContainerView.setVisibility(View.VISIBLE);
+        }
+
+        Date date = data.getReleaseDate();
+        if (date != null) {
+            CharSequence dateSequence = DateUtils.getRelativeTimeSpanString(date.getTime());
+            mDateTextView.setText(dateSequence);
+        }
+
+        mVoteRatingTextView.setText(String.valueOf(data.getVoteAverage()));
+
+        String imageUrl = getString(R.string.backend_images_thumb_base_url) + data.getPosterPath();
+        Glide.with(MovieDetailsFragment.this).load(imageUrl).centerCrop().into(mMovieImageView);
+
+    }
+
+    @Override
+    public void showMessage(@NonNull Object message) {
+        VolleyErrorHelper.handleErrorWithToast(message, getActivity());
     }
 }

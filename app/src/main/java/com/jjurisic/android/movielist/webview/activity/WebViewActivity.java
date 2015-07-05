@@ -14,11 +14,12 @@ import android.webkit.WebViewClient;
 
 import com.jjurisic.android.movielist.R;
 import com.jjurisic.android.movielist.base.BaseActivity;
+import com.jjurisic.android.movielist.webview.view.WebActivityView;
 
 /**
  * Created by jurisicJosip.
  */
-public class WebViewActivity extends BaseActivity {
+public class WebViewActivity extends BaseActivity implements WebActivityView {
 
     //Bundle keys
     public static final String KEY_URL = "key_url";
@@ -31,18 +32,13 @@ public class WebViewActivity extends BaseActivity {
         return intent;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            overridePendingTransition(R.anim.stay, R.anim.bottom_down);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
+    // Data
     private String mUrl;
     private String mTitle;
+
+    // Ui widgets
+    private WebView mWebView;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +56,14 @@ public class WebViewActivity extends BaseActivity {
 
     @Override
     protected void initUi() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(mTitle);
         }
 
-        WebView mWebView = (WebView) findViewById(R.id.webview);
-        mWebView.loadUrl(mUrl);
+        mWebView = (WebView) findViewById(R.id.webview);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -83,4 +77,25 @@ public class WebViewActivity extends BaseActivity {
         finish();
         overridePendingTransition(R.anim.stay, R.anim.bottom_down);
     }
+
+    @Override
+    public void setTitle(@Nullable String title) {
+        mToolbar.setTitle(mTitle);
+    }
+
+    @Override
+    public void setUrl(@NonNull String imagePath) {
+        mWebView.loadUrl(mUrl);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            overridePendingTransition(R.anim.stay, R.anim.bottom_down);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

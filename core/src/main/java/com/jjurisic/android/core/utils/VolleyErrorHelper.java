@@ -15,7 +15,6 @@ import com.google.gson.Gson;
 import com.jjurisic.android.core.R;
 import com.jjurisic.android.core.model.VolleyErrorModel;
 
-
 /**
  * Created by jurisicJosip.
  */
@@ -70,15 +69,12 @@ public class VolleyErrorHelper {
                 case 401:
                 case 400:
                     try {
-                        //server might return error like this { "error": "Some error occured"}
-                        //Use "Gson" to parse the result
                         String resp = new String(response.data);
                         VolleyErrorModel volleyError = new Gson().fromJson(resp, VolleyErrorModel.class);
                         return volleyError.getMessage();
                     } catch (Exception e) {
                         Logger.doLogException(e);
                     }
-                    // invalid request
                     return error.getMessage();
                 default:
                     return context.getResources().getString(R.string.error);
