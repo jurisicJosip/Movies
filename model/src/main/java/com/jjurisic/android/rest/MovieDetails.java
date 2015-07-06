@@ -31,6 +31,8 @@ public class MovieDetails extends BaseModel {
     @SerializedName("vote_average")
     private double voteAverage;
 
+    private double popularity;
+
     public List<Genre> getGenres() {
         return genres;
     }
@@ -59,6 +61,10 @@ public class MovieDetails extends BaseModel {
         return voteAverage;
     }
 
+    public double getPopularity() {
+        return popularity;
+    }
+
     @Override
     public String toString() {
         return "MovieDetails{" +
@@ -70,6 +76,7 @@ public class MovieDetails extends BaseModel {
                 ", posterPath='" + posterPath + '\'' +
                 ", homepage='" + homepage + '\'' +
                 ", voteAverage=" + voteAverage +
+                ", popularity=" + popularity +
                 '}';
     }
 

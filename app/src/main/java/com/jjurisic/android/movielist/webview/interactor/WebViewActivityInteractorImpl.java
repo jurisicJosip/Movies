@@ -11,7 +11,7 @@ import com.jjurisic.android.movielist.webview.listener.OnWebViewDataLoadedListen
 public class WebViewActivityInteractorImpl implements WebViewActivityInteractor {
 
     @Override
-    public void loadPosterData(@Nullable String title, @NonNull String url, @NonNull OnWebViewDataLoadedListener listener) {
+    public void loadData(@Nullable String title, @NonNull String url, @NonNull OnWebViewDataLoadedListener listener) {
         listener.onUrlLoaded(url);
         listener.onTitleLoaded(title);
     }

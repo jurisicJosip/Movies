@@ -58,6 +58,7 @@ public class MovieDetailsFragment extends BaseFragment implements MovieDetailsVi
     private TextView mGenreTextView;
     private TextView mHomePageTextView;
     private TextView mDateTextView;
+    private TextView mPopulrityTextView;
     private CardView mHomepageContainerView;
 
     private MovieDetailsPresenter movieDetailsPresenter;
@@ -122,6 +123,7 @@ public class MovieDetailsFragment extends BaseFragment implements MovieDetailsVi
         mGenreTextView = (TextView) view.findViewById(R.id.content_genre);
         mHomePageTextView = (TextView) view.findViewById(R.id.content_homepage);
         mDateTextView = (TextView) view.findViewById(R.id.content_date);
+        mPopulrityTextView = (TextView) view.findViewById(R.id.content_popularity);
 
         mHomepageContainerView = (CardView) view.findViewById(R.id.container_homepage);
         mHomepageContainerView.setOnClickListener(this);
@@ -178,6 +180,7 @@ public class MovieDetailsFragment extends BaseFragment implements MovieDetailsVi
         }
 
         mVoteRatingTextView.setText(String.valueOf(data.getVoteAverage()));
+        mPopulrityTextView.setText(String.format("%.3f", data.getPopularity()));
 
         String imageUrl = getString(R.string.backend_images_thumb_base_url) + data.getPosterPath();
         Glide.with(MovieDetailsFragment.this).load(imageUrl).centerCrop().into(mMovieImageView);

@@ -14,6 +14,8 @@ import android.webkit.WebViewClient;
 
 import com.jjurisic.android.movielist.R;
 import com.jjurisic.android.movielist.base.BaseActivity;
+import com.jjurisic.android.movielist.webview.presenter.WebViewPresenter;
+import com.jjurisic.android.movielist.webview.presenter.WebViewPresenterImpl;
 import com.jjurisic.android.movielist.webview.view.WebActivityView;
 
 /**
@@ -70,6 +72,9 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
                 return true;
             }
         });
+
+        WebViewPresenter mWebViewPresenter = new WebViewPresenterImpl(this);
+        mWebViewPresenter.loadData(mTitle, mUrl);
     }
 
     @Override
@@ -97,5 +102,4 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

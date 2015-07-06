@@ -9,4 +9,5 @@
     <string name="genre">Genre</string>
     <string name="homepage">Homepage</string>
     <string name="release_date">Release Date</string>
+    <string name="popularity">Popularity</string>
 </resources>

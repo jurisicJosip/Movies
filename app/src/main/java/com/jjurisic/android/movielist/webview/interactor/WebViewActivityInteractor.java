@@ -10,5 +10,5 @@ import com.jjurisic.android.movielist.webview.listener.OnWebViewDataLoadedListen
  */
 public interface WebViewActivityInteractor {
 
-   void loadPosterData(@Nullable String title, @NonNull String url, @NonNull OnWebViewDataLoadedListener listener);
+   void loadData(@Nullable String title, @NonNull String url, @NonNull OnWebViewDataLoadedListener listener);
 }

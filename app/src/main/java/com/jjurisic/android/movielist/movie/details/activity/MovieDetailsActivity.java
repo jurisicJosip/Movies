@@ -28,11 +28,13 @@ public class MovieDetailsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment_container);
 
+        long movieId = 0;
         Bundle extras = getIntent().getExtras();
         if (extras != null && extras.containsKey(KEY_MOVIE_ID)) {
-            long movieId = extras.getLong(KEY_MOVIE_ID);
-            replaceFragment(R.id.fragment_container, MovieDetailsFragment.newInstance(movieId), false);
+            movieId = extras.getLong(KEY_MOVIE_ID);
         }
+
+        replaceFragment(R.id.fragment_container, MovieDetailsFragment.newInstance(movieId), false);
     }
 
     @Override

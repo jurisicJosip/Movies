@@ -39,6 +39,9 @@ public class Ballista {
 
         String baseUrl = mContext.getString(R.string.backend_base_url);
         String entityMovies = mContext.getString(R.string.entity_movies_list, movieSortType.toString().toLowerCase(), page, apiKey);
+        if (movieSortType == MovieSortType.POPULAR) {
+            entityMovies = entityMovies.concat("&sort_by=popularity.desc");
+        }
         String endpoint = baseUrl + entityMovies;
 
         GsonRequest<MoviesListWrapper> request = new GsonRequest<>(endpoint, MoviesListWrapper.class, null, new Response.Listener<MoviesListWrapper>() {

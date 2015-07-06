@@ -13,6 +13,7 @@
     <item name="content_title" type="id" />
     <item name="content_description" type="id" />
     <item name="content_rating" type="id" />
+    <item name="content_popularity" type="id" />
     <item name="content_date" type="id" />
     <item name="content_genre" type="id" />
     <item name="content_homepage" type="id" />

@@ -13,26 +13,26 @@ import com.jjurisic.android.movielist.webview.interactor.WebViewActivityInteract
  */
 public class WebViewPresenterImpl implements WebViewPresenter, OnWebViewDataLoadedListener {
 
-    private final WebActivityView moviePosterView;
-    private final WebViewActivityInteractor moviePosterInteractor;
+    private final WebActivityView webActivityView;
+    private final WebViewActivityInteractor webViewActivityInteractor;
 
-    public WebViewPresenterImpl(WebActivityView moviePosterView) {
-        this.moviePosterView = moviePosterView;
-        moviePosterInteractor = new WebViewActivityInteractorImpl();
+    public WebViewPresenterImpl(WebActivityView webActivityView) {
+        this.webActivityView = webActivityView;
+        webViewActivityInteractor = new WebViewActivityInteractorImpl();
     }
 
     @Override
     public void loadData(@Nullable String title, @NonNull String imagePath) {
-        moviePosterInteractor.loadPosterData(title, imagePath, this);
+        webViewActivityInteractor.loadData(title, imagePath, this);
     }
 
     @Override
     public void onTitleLoaded(@Nullable String title) {
-        moviePosterView.setTitle(title);
+        webActivityView.setTitle(title);
     }
 
     @Override
     public void onUrlLoaded(@NonNull String url) {
-        moviePosterView.setUrl(url);
+        webActivityView.setUrl(url);
     }
 }
