@@ -4,10 +4,8 @@
     <string name="backend_images_thumb_base_url">http://image.tmdb.org/t/p/w342</string>
     <string name="backend_images_original_base_url">http://image.tmdb.org/t/p/original</string>
 
-    <string name="moviedb_api_key">your_api_key_here</string>
+    <string name="moviedb_api_key">6d9d41423731322ed381ae4d98c986a6</string>
 
     <string name="backend_base_url">http://api.themoviedb.org/3</string>
-    <string name="entity_movies_list">/movie/%1$s?page=%2$d&amp;api_key=%3$s</string>
-    <string name="entity_movie_details">/movie/%1$d?api_key=%2$s</string>
 
 </resources>

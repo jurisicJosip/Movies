@@ -20,7 +20,7 @@ import java.util.Locale;
 /**
  * Created by jurisicJosip.
  */
-public class VolleyDateProdiver {
+public class GsonDateProvider {
 
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 

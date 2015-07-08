@@ -3,81 +3,83 @@ package com.jjurisic.android.core;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.jjurisic.android.core.api.MoviesApiService;
 import com.jjurisic.android.core.utils.ResponseListener;
 import com.jjurisic.android.rest.MovieDetails;
 import com.jjurisic.android.rest.MoviesListWrapper;
 import com.jjurisic.android.sort.MovieSortType;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.converter.GsonConverter;
 
 /**
  * Created by jurisicJosip.
  */
 public class Ballista {
 
-    private static Ballista instance;
+    private static Ballista sInstance;
 
     public synchronized static Ballista getInstance(@NonNull Context context) {
-        if (instance == null) {
-            instance = new Ballista(context);
+        if (sInstance == null) {
+            sInstance = new Ballista(context);
         }
-        return instance;
+        return sInstance;
     }
 
     private final Context mContext;
-    private final RequestQueue mRequestQueue;
+    private final MoviesApiService moviesApiService;
 
     private Ballista(@NonNull Context context) {
         mContext = context.getApplicationContext();
-        mRequestQueue = Volley.newRequestQueue(context);
+
+        String baseUrl = mContext.getString(R.string.backend_base_url);
+
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setEndpoint(baseUrl)
+                .setConverter(new GsonConverter(gson))
+                .build();
+
+        moviesApiService = restAdapter.create(MoviesApiService.class);
     }
 
     public void requestMovies(int page, @NonNull MovieSortType movieSortType, final ResponseListener<MoviesListWrapper> listener) {
         String apiKey = mContext.getString(R.string.moviedb_api_key);
+        String sortType = movieSortType.name().toLowerCase();
 
-        String baseUrl = mContext.getString(R.string.backend_base_url);
-        String entityMovies = mContext.getString(R.string.entity_movies_list, movieSortType.toString().toLowerCase(), page, apiKey);
-        if (movieSortType == MovieSortType.POPULAR) {
-            entityMovies = entityMovies.concat("&sort_by=popularity.desc");
-        }
-        String endpoint = baseUrl + entityMovies;
-
-        GsonRequest<MoviesListWrapper> request = new GsonRequest<>(endpoint, MoviesListWrapper.class, null, new Response.Listener<MoviesListWrapper>() {
+        moviesApiService.getMoviesList(sortType, page, apiKey, new Callback<MoviesListWrapper>() {
             @Override
-            public void onResponse(MoviesListWrapper response) {
-                listener.onResponse(response);
+            public void success(MoviesListWrapper moviesListWrapper, Response response) {
+                listener.onResponse(moviesListWrapper);
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void failure(RetrofitError error) {
                 listener.onError(error);
             }
         });
-
-        mRequestQueue.add(request);
     }
 
     public void requestMovieDetails(long id, final ResponseListener<MovieDetails> listener) {
         String apiKey = mContext.getString(R.string.moviedb_api_key);
 
-        String baseUrl = mContext.getString(R.string.backend_base_url);
-        String entityMovie = mContext.getString(R.string.entity_movie_details, id, apiKey);
-        String endpoint = baseUrl + entityMovie;
-
-        GsonRequest<MovieDetails> request = new GsonRequest<>(endpoint, MovieDetails.class, null, new Response.Listener<MovieDetails>() {
+        moviesApiService.getMovieDetails(id, apiKey, new Callback<MovieDetails>() {
             @Override
-            public void onResponse(MovieDetails response) {
-                listener.onResponse(response);
+            public void success(MovieDetails movieDetails, Response response) {
+                listener.onResponse(movieDetails);
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void failure(RetrofitError error) {
                 listener.onError(error);
             }
         });
-
-        mRequestQueue.add(request);
     }
 }
