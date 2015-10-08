@@ -7,7 +7,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jjurisic.android.movielist.movie.details.activity.MovieDetailsActivity;
+import com.jjurisic.android.movielist.ui.movie.details.activity.MovieDetailsActivity;
 
 /**
  * Created by jurisicJosip.

@@ -18,5 +18,8 @@
     <item name="content_genre" type="id" />
     <item name="content_homepage" type="id" />
     <item name="container_homepage" type="id" />
+    <item name="content_email" type="id"/>
+    <item name="content_password" type="id"/>
+    <item name="content_submit" type="id"/>
 
 </resources>

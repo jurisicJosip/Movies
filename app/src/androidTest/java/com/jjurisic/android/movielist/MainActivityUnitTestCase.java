@@ -6,7 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.jjurisic.android.movielist.main.activity.MainActivity;
+import com.jjurisic.android.movielist.ui.activity.MainActivity;
 
 /**
  * Created by jurisicJosip.

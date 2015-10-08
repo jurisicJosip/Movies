@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="backend_images_thumb_base_url">http://image.tmdb.org/t/p/w342</string>
+    <string name="backend_images_original_base_url">http://image.tmdb.org/t/p/original</string>
+
+</resources>

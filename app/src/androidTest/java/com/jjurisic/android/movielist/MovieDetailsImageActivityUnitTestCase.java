@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.support.v7.widget.Toolbar;
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.jjurisic.android.movielist.movie.image.activity.MoviePosterActivity;
+import com.jjurisic.android.movielist.ui.movie.poster.activity.MoviePosterActivity;
 
 import uk.co.senab.photoview.PhotoView;
 

@@ -5,7 +5,7 @@ import android.support.v7.widget.Toolbar;
 import android.test.ActivityInstrumentationTestCase2;
 import android.webkit.WebView;
 
-import com.jjurisic.android.movielist.webview.activity.WebViewActivity;
+import com.jjurisic.android.movielist.ui.webview.activity.WebViewActivity;
 
 /**
  * Created by jurisicJosip.
