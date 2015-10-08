@@ -17,4 +17,5 @@ MovieList is an Android project that is made from three main modules (app, core 
 (https://github.com/chrisbanes/PhotoView)
 5. Dagger2 – Dependency Injection
 (http://google.github.io/dagger)
+
 Regards
