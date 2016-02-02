@@ -51,7 +51,6 @@ public class NetworkApiModule {
     }
 
     @Provides
-    @ClientId
     @Singleton
     public String provideClientId() {
         return API_KEY;
@@ -59,7 +58,7 @@ public class NetworkApiModule {
 
     @Provides
     @Singleton
-    public RequestInterceptor provideRequestInterceptor(@ClientId final String apiKey) {
+    public RequestInterceptor provideRequestInterceptor(final String apiKey) {
         return new RequestInterceptor() {
             @Override
             public void intercept(RequestFacade request) {

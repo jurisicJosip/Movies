@@ -10,7 +10,4 @@
     <string name="homepage">Homepage</string>
     <string name="release_date">Release Date</string>
     <string name="popularity">Popularity</string>
-    <string name="email_hint">Enter your E-mail address</string>
-    <string name="password_hint">Password here</string>
-    <string name="submit">Submit</string>
 </resources>

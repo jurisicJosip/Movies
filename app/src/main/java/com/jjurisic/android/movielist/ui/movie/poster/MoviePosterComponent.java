@@ -20,10 +20,8 @@
 
 package com.jjurisic.android.movielist.ui.movie.poster;
 
-import com.jjurisic.android.movielist.ActivityScope;
 import com.jjurisic.android.movielist.AppComponent;
-import com.jjurisic.android.movielist.ui.movie.poster.activity.MoviePosterActivity;
-import com.jjurisic.android.movielist.ui.movie.poster.presenter.MoviePosterPresenter;
+import com.jjurisic.android.movielist.di.ActivityScope;
 
 import dagger.Component;
 
@@ -32,7 +30,5 @@ import dagger.Component;
 public interface MoviePosterComponent {
 
     void inject(MoviePosterActivity activity);
-
-    MoviePosterPresenter getMoviePosterPresenter();
 
 }

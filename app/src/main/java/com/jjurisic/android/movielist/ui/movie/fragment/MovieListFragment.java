@@ -1,6 +1,7 @@
 package com.jjurisic.android.movielist.ui.movie.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,9 +17,7 @@ import com.jjurisic.android.movielist.R;
 import com.jjurisic.android.movielist.ui.base.BaseFragment;
 import com.jjurisic.android.movielist.ui.base.adapter.OnAdapterLastItemReachListener;
 import com.jjurisic.android.movielist.ui.movie.adapter.MovieListAdapter;
-import com.jjurisic.android.movielist.ui.movie.fragment.presenter.MoviesPresenter;
-import com.jjurisic.android.movielist.ui.movie.fragment.presenter.MoviesPresenterImpl;
-import com.jjurisic.android.movielist.ui.movie.fragment.view.MoviesView;
+import com.jjurisic.android.movielist.ui.movie.details.MovieDetailsActivity;
 import com.jjurisic.android.rest.Movie;
 import com.jjurisic.android.rest.MoviesListWrapper;
 import com.jjurisic.android.sort.MovieSortType;
@@ -28,6 +27,7 @@ import java.io.Serializable;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by jurisicJosip.
@@ -36,6 +36,14 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
 
     //Bundle keys
     private static final String KEY_MOVIE_SORT_TYPE = "key_movie_sort_type";
+    @Inject
+    MoviesPresenter moviesPresenter;
+    @Bind(R.id.refresh)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    @Bind(R.id.adapter_view)
+    RecyclerView mRecyclerView;
+    private MovieListAdapter mMoviesAdapter;
+    private MovieSortType mMovieSortType;
 
     @NonNull
     public static BaseFragment newInstance(@NonNull MovieSortType movieSortType) {
@@ -45,19 +53,6 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
         f.setArguments(b);
         return f;
     }
-
-    @Inject
-    MoviesPresenter moviesPresenter;
-
-    private MovieListAdapter mMoviesAdapter;
-    private MovieSortType mMovieSortType;
-    private int page = 1;
-
-    @Bind(R.id.refresh)
-    SwipeRefreshLayout mSwipeRefreshLayout;
-
-    @Bind(R.id.adapter_view)
-    RecyclerView mRecyclerView;
 
     @Override
     public void onAttach(Context activity) {
@@ -98,6 +93,7 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
         prepareUi(view);
     }
 
@@ -110,8 +106,7 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
         mMoviesAdapter.setInfiniteAdapterListener(new OnAdapterLastItemReachListener() {
             @Override
             public void onLastItemReached() {
-                page += 1;
-                requestMoviesFromBackend(page);
+                moviesPresenter.loadMoreMovies(mMovieSortType);
             }
         });
         mMoviesAdapter.setMovieItemClickListener(this);
@@ -128,22 +123,17 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
 
     @Override
     protected void prepareData() {
-        requestMoviesFromBackend(page);
-    }
-
-    private void requestMoviesFromBackend(final int page) {
-        moviesPresenter.requestMoviesFromBackend(getActivity(), page, mMovieSortType);
+        moviesPresenter.loadMovies(mMovieSortType);
     }
 
     @Override
     public void onRefresh() {
-        page = 1;
-        requestMoviesFromBackend(page);
+        moviesPresenter.loadMovies(mMovieSortType);
     }
 
     @Override
     public void onMovieItemClick(@NonNull Movie movie) {
-        moviesPresenter.onMovieItemClick(getActivity(), movie);
+        moviesPresenter.loadMovieDetails(movie.getId());
     }
 
     @Override
@@ -154,6 +144,13 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
         } else {
             mMoviesAdapter.addData(movies.getResults());
         }
+    }
+
+    @Override
+    public void showMovieDetails(long movieId) {
+        Intent intent = MovieDetailsActivity.getLaunchIntent(getActivity(), movieId);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override

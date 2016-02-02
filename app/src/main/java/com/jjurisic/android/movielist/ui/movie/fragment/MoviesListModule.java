@@ -21,17 +21,13 @@
 package com.jjurisic.android.movielist.ui.movie.fragment;
 
 
-import com.jjurisic.android.movielist.ui.movie.fragment.presenter.MoviesPresenter;
-import com.jjurisic.android.movielist.ui.movie.fragment.presenter.MoviesPresenterImpl;
-import com.jjurisic.android.movielist.ui.movie.fragment.view.MoviesView;
-
 import dagger.Module;
 import dagger.Provides;
 
 @Module
 public class MoviesListModule {
 
-    private MoviesView view;
+    private final MoviesView view;
 
     public MoviesListModule(MoviesView view) {
         this.view = view;

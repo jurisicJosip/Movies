@@ -20,9 +20,8 @@
 
 package com.jjurisic.android.movielist.ui.movie.fragment;
 
-import com.jjurisic.android.movielist.ActivityScope;
 import com.jjurisic.android.movielist.AppComponent;
-import com.jjurisic.android.movielist.ui.movie.fragment.presenter.MoviesPresenter;
+import com.jjurisic.android.movielist.di.ActivityScope;
 
 import dagger.Component;
 
@@ -31,7 +30,5 @@ import dagger.Component;
 public interface MoviesListComponent {
 
     void inject(MovieListFragment fragment);
-
-    MoviesPresenter getMoviesPresenter();
 
 }

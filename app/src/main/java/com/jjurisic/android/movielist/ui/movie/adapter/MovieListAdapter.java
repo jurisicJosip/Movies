@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.jjurisic.android.movielist.R;
 import com.jjurisic.android.movielist.ui.base.adapter.InfiniteRecycleViewAdapter;
+import com.jjurisic.android.movielist.utils.ImageUtils;
 import com.jjurisic.android.rest.Movie;
 
 import java.util.ArrayList;
@@ -23,8 +24,11 @@ import java.util.List;
  */
 public class MovieListAdapter extends InfiniteRecycleViewAdapter {
 
+    //data
     private final List<Movie> mDataSource = new ArrayList<>();
     private int totalItems = Integer.MAX_VALUE;
+
+    //listener
     private OnMovieItemClickListener mMovieItemClickListener;
 
     public void addData(@NonNull List<Movie> data) {
@@ -52,7 +56,9 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Movie movie = mDataSource.get(position);
         if (holder instanceof MovieViewHolder) {
-            ((MovieViewHolder) holder).setData(movie);
+            MovieViewHolder movieViewHolder = ((MovieViewHolder) holder);
+            movieViewHolder.setData(movie);
+            movieViewHolder.setListener(mMovieItemClickListener);
         }
 
         checkAndReportLastPosition(position);
@@ -72,8 +78,11 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
         totalItems = total;
     }
 
+    public interface OnMovieItemClickListener {
+        void onMovieItemClick(@NonNull Movie movie);
+    }
 
-    protected class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private static class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         //Ui widgets
         private final AppCompatTextView mMovieTitleTextView;
@@ -83,6 +92,8 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
         //data
         private Movie mMovie;
 
+        private OnMovieItemClickListener mMovieItemClickListener;
+
         public MovieViewHolder(View view) {
             super(view);
 
@@ -91,6 +102,10 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
             mMovieImageView = (ImageView) view.findViewById(R.id.content_image);
 
             view.setOnClickListener(this);
+        }
+
+        public void setListener(OnMovieItemClickListener listener) {
+            this.mMovieItemClickListener = listener;
         }
 
         public void setData(@NonNull Movie movie) {
@@ -104,7 +119,7 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
                 mMovieDateTextView.setText(dateSequence);
             }
 
-            String imageUrl = itemView.getContext().getString(R.string.backend_images_thumb_base_url) + movie.getPosterPath();
+            String imageUrl = ImageUtils.getImageThumbFrom(movie.getPosterPath());
             Glide.with(itemView.getContext()).load(imageUrl).centerCrop().into(mMovieImageView);
         }
 
@@ -114,9 +129,5 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
                 mMovieItemClickListener.onMovieItemClick(mMovie);
             }
         }
-    }
-
-    public interface OnMovieItemClickListener {
-        void onMovieItemClick(@NonNull Movie movie);
     }
 }

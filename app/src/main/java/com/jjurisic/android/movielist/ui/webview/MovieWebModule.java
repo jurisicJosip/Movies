@@ -21,17 +21,13 @@
 package com.jjurisic.android.movielist.ui.webview;
 
 
-import com.jjurisic.android.movielist.ui.webview.presenter.WebViewPresenter;
-import com.jjurisic.android.movielist.ui.webview.presenter.WebViewPresenterImpl;
-import com.jjurisic.android.movielist.ui.webview.view.WebActivityView;
-
 import dagger.Module;
 import dagger.Provides;
 
 @Module
 public class MovieWebModule {
 
-    private WebActivityView view;
+    private final WebActivityView view;
 
     public MovieWebModule(WebActivityView view) {
         this.view = view;

@@ -11,13 +11,11 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
-apply from: '../jacoco.gradle'
 apply plugin: 'com.jakewharton.hugo'
 
 android {
     compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
     buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
-
     defaultConfig {
         applicationId "com.jjurisic.android.movielist"
         minSdkVersion Integer.parseInt(project.ANDROID_BUILD_MIN_SDK_VERSION)
@@ -25,16 +23,14 @@ android {
         versionName VERSION_NAME
         versionCode Integer.parseInt(project.VERSION_CODE)
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        testHandleProfiling true
-        testFunctionalTest true
     }
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
             versionNameSuffix '-debug'
+            testCoverageEnabled = true
             debuggable true
             minifyEnabled false
-            testCoverageEnabled = true
         }
 
         release {
@@ -42,56 +38,83 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     lintOptions {
         disable 'InvalidPackage'
     }
-
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude 'LICENSE.txt'
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+
+    productFlavors {
+        prod {
+            applicationId 'com.jjurisic.android.movielist'
+        }
+
+        mock {
+            applicationId 'com.jjurisic.android.movielist.mock'
+        }
+    }
+}
+
+ext {
+    supportLibVersion = "23.1.1"
+    espressoVersion = "2.2.1"
+    androidTestVersion = "0.4"
+    hamcrestVersion = "1.3"
+    junitVersion = "4.12"
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.0.1'
-
-    compile 'com.android.support:cardview-v7:23.0.1'
-    compile 'com.android.support:recyclerview-v7:23.0.1'
-    compile 'com.android.support:design:23.0.1'
-
     compile 'com.github.bumptech.glide:glide:3.6.0'
     compile 'com.github.chrisbanes.photoview:library:1.2.3'
-
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.10.19'
-    androidTestCompile 'org.mockito:mockito-core:1.10.19'
-    androidTestCompile "com.google.dexmaker:dexmaker:1.2"
-    androidTestCompile "com.google.dexmaker:dexmaker-mockito:1.2"
-
     //rx java
     compile 'io.reactivex:rxjava:1.0.8'
     compile 'io.reactivex:rxandroid:1.0.1'
-
     compile 'com.jakewharton:butterknife:7.0.1'
-
-    // Espresso 2 Dependencies
-    androidTestCompile 'com.android.support.test:testing-support-lib:0.1'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.0'
-    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.0') {
-        exclude module: 'support-annotations'
+    //test
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    androidTestCompile 'org.mockito:mockito-core:1.10.19'
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
+    testCompile 'junit:junit:4.12'
+    compile "com.android.support:appcompat-v7:${supportLibVersion}"
+    compile "com.android.support:cardview-v7:${supportLibVersion}"
+    compile "com.android.support:design:${supportLibVersion}"
+    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
+    compile "com.android.support.test.espresso:espresso-idling-resource:${espressoVersion}"
+    testCompile "junit:junit:${junitVersion}"
+    androidTestCompile("com.android.support.test.espresso:espresso-core:${espressoVersion}")
+            {
+                exclude module: "espresso-idling-resource"
+                exclude group: "com.android.support"
+            }
+    androidTestCompile("com.android.support.test.espresso:espresso-contrib:${espressoVersion}") {
+        exclude module: "espresso-core"
+        exclude module: "recyclerview-v7"
+        exclude group: "com.android.support"
     }
-
+    androidTestCompile("com.android.support.test:rules:${androidTestVersion}") {
+        exclude group: "com.android.support"
+    }
+    androidTestCompile("com.android.support.test:runner:${androidTestVersion}") {
+        exclude group: "com.android.support"
+    }
+    androidTestCompile "org.hamcrest:hamcrest-core:${hamcrestVersion}"
     //dagger2
     compile 'com.google.dagger:dagger:2.0'
     apt 'com.google.dagger:dagger-compiler:2.0'
     provided 'org.glassfish:javax.annotation:10.0-b28'
+    //retrofit
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile project(':model')
 
-    compile project (':core')
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxjava:1.1.0'
 }

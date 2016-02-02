@@ -21,17 +21,13 @@
 package com.jjurisic.android.movielist.ui.movie.poster;
 
 
-import com.jjurisic.android.movielist.ui.movie.poster.presenter.MoviePosterPresenter;
-import com.jjurisic.android.movielist.ui.movie.poster.presenter.MoviePosterPresenterImpl;
-import com.jjurisic.android.movielist.ui.movie.poster.view.MoviePosterView;
-
 import dagger.Module;
 import dagger.Provides;
 
 @Module
 public class MoviePosterModule {
 
-    private MoviePosterView view;
+    private final MoviePosterView view;
 
     public MoviePosterModule(MoviePosterView view) {
         this.view = view;

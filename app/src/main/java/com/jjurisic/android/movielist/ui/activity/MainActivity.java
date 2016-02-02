@@ -1,6 +1,8 @@
 package com.jjurisic.android.movielist.ui.activity;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -54,7 +56,7 @@ public class MainActivity extends BaseActivity {
         toolbar.setTitle(R.string.app_name);
         toolbar.setNavigationIcon(R.drawable.ic_movie_white_36dp);
 
-        MoviesPagerAdapter adapter = new MoviesPagerAdapter(getSupportFragmentManager());
+        MoviesPagerAdapter adapter = new MoviesPagerAdapter(getSupportFragmentManager(), this);
         adapter.addFragment(MovieListFragment.newInstance(MovieSortType.TOP_RATED), MovieSortType.TOP_RATED);
         adapter.addFragment(MovieListFragment.newInstance(MovieSortType.POPULAR), MovieSortType.POPULAR);
         adapter.addFragment(MovieListFragment.newInstance(MovieSortType.UPCOMING), MovieSortType.UPCOMING);
@@ -63,12 +65,15 @@ public class MainActivity extends BaseActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    private class MoviesPagerAdapter extends FragmentPagerAdapter {
+    private static class MoviesPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragments = new ArrayList<>();
         private final List<MovieSortType> mFragmentTitles = new ArrayList<>();
 
-        public MoviesPagerAdapter(FragmentManager fm) {
+        private final Context context;
+
+        public MoviesPagerAdapter(FragmentManager fm, Context context) {
             super(fm);
+            this.context = context;
         }
 
         public void addFragment(Fragment fragment, MovieSortType title) {
@@ -86,16 +91,17 @@ public class MainActivity extends BaseActivity {
             return mFragments.size();
         }
 
+        @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
             MovieSortType type = mFragmentTitles.get(position);
             switch (type) {
                 case POPULAR:
-                    return getString(R.string.popular);
+                    return context.getString(R.string.popular);
                 case UPCOMING:
-                    return getString(R.string.upcoming);
+                    return context.getString(R.string.upcoming);
                 case TOP_RATED:
-                    return getString(R.string.top_rated);
+                    return context.getString(R.string.top_rated);
 
                 default:
                     return null;

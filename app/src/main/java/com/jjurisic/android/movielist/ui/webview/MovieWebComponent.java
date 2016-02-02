@@ -20,10 +20,8 @@
 
 package com.jjurisic.android.movielist.ui.webview;
 
-import com.jjurisic.android.movielist.ActivityScope;
 import com.jjurisic.android.movielist.AppComponent;
-import com.jjurisic.android.movielist.ui.webview.activity.WebViewActivity;
-import com.jjurisic.android.movielist.ui.webview.presenter.WebViewPresenter;
+import com.jjurisic.android.movielist.di.ActivityScope;
 
 import dagger.Component;
 
@@ -32,7 +30,5 @@ import dagger.Component;
 public interface MovieWebComponent {
 
     void inject(WebViewActivity activity);
-
-    WebViewPresenter getWebViewPresenter();
 
 }
