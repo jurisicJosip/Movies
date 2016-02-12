@@ -3,36 +3,26 @@ package com.jjurisic.android.movielist.ui.movie.fragment;
 
 import android.support.annotation.NonNull;
 
-import com.jjurisic.android.movielist.api.backend.ResponseListener;
-import com.jjurisic.android.movielist.interactors.MoviesInteractor;
-import com.jjurisic.android.movielist.interactors.MoviesInteractorImpl;
-import com.jjurisic.android.rest.MoviesListWrapper;
+import com.jjurisic.android.model.MovieModel;
+import com.jjurisic.android.movielist.model.DataManager;
 import com.jjurisic.android.sort.MovieSortType;
+
+import java.util.List;
+
+import rx.Observer;
 
 /**
  * Created by jurisicJosip.
  */
-public class MoviesPresenterImpl implements MoviesPresenter, ResponseListener<MoviesListWrapper> {
+public class MoviesPresenterImpl implements MoviesPresenter {
 
     private final MoviesView moviesView;
-    private final MoviesInteractor moviesInteractor;
-    private int page;
+    private final DataManager dataManager;
+    private int page = 1;
 
-    public MoviesPresenterImpl(MoviesView moviesView) {
+    public MoviesPresenterImpl(MoviesView moviesView, DataManager dataManager) {
         this.moviesView = moviesView;
-        moviesInteractor = new MoviesInteractorImpl();
-    }
-
-    @Override
-    public void onResponse(MoviesListWrapper data) {
-        moviesView.setMovies(data);
-        moviesView.hideProgress();
-    }
-
-    @Override
-    public void onError(Object error) {
-        moviesView.showMessage(error);
-        moviesView.hideProgress();
+        this.dataManager = dataManager;
     }
 
     @Override
@@ -42,14 +32,48 @@ public class MoviesPresenterImpl implements MoviesPresenter, ResponseListener<Mo
 
     @Override
     public void loadMovies(@NonNull MovieSortType type) {
-        page = 1;
         moviesView.showProgress();
-        moviesInteractor.requestMovies(page, type, this);
+
+        page = 1;
+
+        dataManager.getMovies(page, type, new Observer<List<MovieModel>>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                moviesView.showMessage(e.toString());
+                moviesView.hideProgress();
+            }
+
+            @Override
+            public void onNext(List<MovieModel> movieModels) {
+                moviesView.setMovies(movieModels);
+                moviesView.hideProgress();
+            }
+        });
     }
 
     @Override
     public void loadMoreMovies(@NonNull MovieSortType type) {
         page = page + 1;
-        moviesInteractor.requestMovies(page, type, this);
+        dataManager.getMovies(page, type, new Observer<List<MovieModel>>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                moviesView.showMessage(e.toString());
+                moviesView.hideProgress();
+            }
+
+            @Override
+            public void onNext(List<MovieModel> movieModels) {
+                moviesView.setMovies(movieModels);
+                moviesView.hideProgress();
+            }
+        });
     }
 }

@@ -3,8 +3,6 @@ package com.jjurisic.android.rest;
 import com.google.gson.annotations.SerializedName;
 import com.jjurisic.android.base.BaseModel;
 
-import java.util.Date;
-
 /**
  * Created by jurisicJosip.
  */
@@ -19,7 +17,7 @@ public class Movie extends BaseModel {
     private String posterPath;
 
     @SerializedName("release_date")
-    private Date releaseDate;
+    private String releaseDate;
 
     private double popularity;
 
@@ -35,7 +33,7 @@ public class Movie extends BaseModel {
         return posterPath;
     }
 
-    public Date getReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
 

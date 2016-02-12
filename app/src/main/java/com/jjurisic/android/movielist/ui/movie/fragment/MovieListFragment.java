@@ -11,18 +11,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.jjurisic.android.model.MovieModel;
+import com.jjurisic.android.movielist.App;
 import com.jjurisic.android.movielist.AppComponent;
 import com.jjurisic.android.movielist.R;
 import com.jjurisic.android.movielist.ui.base.BaseFragment;
 import com.jjurisic.android.movielist.ui.base.adapter.OnAdapterLastItemReachListener;
 import com.jjurisic.android.movielist.ui.movie.adapter.MovieListAdapter;
 import com.jjurisic.android.movielist.ui.movie.details.MovieDetailsActivity;
-import com.jjurisic.android.rest.Movie;
-import com.jjurisic.android.rest.MoviesListWrapper;
 import com.jjurisic.android.sort.MovieSortType;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -70,16 +72,10 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        moviesPresenter = new MoviesPresenterImpl(this);
-    }
-
-    @Override
     protected void setupComponent(AppComponent appComponent) {
         DaggerMoviesListComponent.builder()
                 .appComponent(appComponent)
-                .moviesListModule(new MoviesListModule(this))
+                .moviesListModule(new MoviesListModule(getContext(), this))
                 .build()
                 .inject(this);
     }
@@ -132,18 +128,13 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
     }
 
     @Override
-    public void onMovieItemClick(@NonNull Movie movie) {
+    public void onMovieItemClick(@NonNull MovieModel movie) {
         moviesPresenter.loadMovieDetails(movie.getId());
     }
 
     @Override
-    public void setMovies(@NonNull MoviesListWrapper movies) {
-        if (movies.getPage() == 1) {
-            mMoviesAdapter.setData(movies.getResults());
-            mMoviesAdapter.setTotalItems(movies.getTotalItems());
-        } else {
-            mMoviesAdapter.addData(movies.getResults());
-        }
+    public void setMovies(@NonNull List<MovieModel> movies) {
+        mMoviesAdapter.setData(movies);
     }
 
     @Override
@@ -155,7 +146,7 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
 
     @Override
     public void showMessage(@NonNull Object message) {
-//        VolleyErrorHelper.handleErrorWithToast(message, getActivity());
+        Toast.makeText(App.get(), message.toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override

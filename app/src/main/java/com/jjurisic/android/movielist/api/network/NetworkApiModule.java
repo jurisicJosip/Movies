@@ -22,8 +22,7 @@ import retrofit.converter.GsonConverter;
 public class NetworkApiModule {
 
     private static final String KEY_BASE_URL = "http://api.themoviedb.org/3";
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
-    private static final String API_KEY = "your_api_key_here";
+    private static final String API_KEY = "your_key_here";
 
     @Provides
     @Singleton
@@ -34,7 +33,7 @@ public class NetworkApiModule {
     @Provides
     @Singleton
     public GsonConverter provideGsonConverter() {
-        Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+        Gson gson = new GsonBuilder().create();
         return new GsonConverter(gson);
     }
 

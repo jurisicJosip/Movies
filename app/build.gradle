@@ -49,16 +49,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
-
-    productFlavors {
-        prod {
-            applicationId 'com.jjurisic.android.movielist'
-        }
-
-        mock {
-            applicationId 'com.jjurisic.android.movielist.mock'
-        }
-    }
 }
 
 ext {

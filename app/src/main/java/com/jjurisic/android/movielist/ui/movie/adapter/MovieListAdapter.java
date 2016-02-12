@@ -10,11 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.jjurisic.android.model.MovieModel;
 import com.jjurisic.android.movielist.R;
 import com.jjurisic.android.movielist.ui.base.adapter.InfiniteRecycleViewAdapter;
+import com.jjurisic.android.movielist.utils.DateTimeUtils;
 import com.jjurisic.android.movielist.utils.ImageUtils;
-import com.jjurisic.android.rest.Movie;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,18 +27,18 @@ import java.util.List;
 public class MovieListAdapter extends InfiniteRecycleViewAdapter {
 
     //data
-    private final List<Movie> mDataSource = new ArrayList<>();
+    private final List<MovieModel> mDataSource = new ArrayList<>();
     private int totalItems = Integer.MAX_VALUE;
 
     //listener
     private OnMovieItemClickListener mMovieItemClickListener;
 
-    public void addData(@NonNull List<Movie> data) {
+    public void addData(@NonNull List<MovieModel> data) {
         mDataSource.addAll(data);
         notifyDataSetChanged();
     }
 
-    public void setData(@NonNull List<Movie> data) {
+    public void setData(@NonNull List<MovieModel> data) {
         mDataSource.clear();
         mDataSource.addAll(data);
         notifyDataSetChanged();
@@ -54,7 +56,7 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Movie movie = mDataSource.get(position);
+        MovieModel movie = mDataSource.get(position);
         if (holder instanceof MovieViewHolder) {
             MovieViewHolder movieViewHolder = ((MovieViewHolder) holder);
             movieViewHolder.setData(movie);
@@ -79,7 +81,7 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
     }
 
     public interface OnMovieItemClickListener {
-        void onMovieItemClick(@NonNull Movie movie);
+        void onMovieItemClick(@NonNull MovieModel movie);
     }
 
     private static class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -90,7 +92,7 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
         private final ImageView mMovieImageView;
 
         //data
-        private Movie mMovie;
+        private MovieModel mMovie;
 
         private OnMovieItemClickListener mMovieItemClickListener;
 
@@ -108,15 +110,20 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
             this.mMovieItemClickListener = listener;
         }
 
-        public void setData(@NonNull Movie movie) {
+        public void setData(@NonNull MovieModel movie) {
             mMovie = movie;
 
-            mMovieTitleTextView.setText(movie.getOriginalTitle());
+            mMovieTitleTextView.setText(movie.getName());
 
-            Date date = movie.getReleaseDate();
+            String date = movie.getReleaseDate();
             if (date != null) {
-                CharSequence dateSequence = DateUtils.getRelativeTimeSpanString(date.getTime());
-                mMovieDateTextView.setText(dateSequence);
+                try {
+                    Date formattedDate = DateTimeUtils.getDateFrom(date);
+                    CharSequence dateSequence = DateUtils.getRelativeTimeSpanString(formattedDate.getTime());
+                    mMovieDateTextView.setText(dateSequence);
+                } catch (ParseException e) {
+                    //ok nothing
+                }
             }
 
             String imageUrl = ImageUtils.getImageThumbFrom(movie.getPosterPath());

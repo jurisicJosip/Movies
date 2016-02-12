@@ -3,7 +3,6 @@ package com.jjurisic.android.rest;
 import com.google.gson.annotations.SerializedName;
 import com.jjurisic.android.base.BaseModel;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,7 +18,7 @@ public class MovieDetails extends BaseModel {
     private String originalTitle;
 
     @SerializedName("release_date")
-    private Date releaseDate;
+    private String releaseDate;
 
     private String overview;
 
@@ -45,7 +44,7 @@ public class MovieDetails extends BaseModel {
         return originalTitle;
     }
 
-    public Date getReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
 

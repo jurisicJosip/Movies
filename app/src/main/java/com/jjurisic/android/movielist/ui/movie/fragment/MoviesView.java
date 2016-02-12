@@ -2,14 +2,16 @@ package com.jjurisic.android.movielist.ui.movie.fragment;
 
 import android.support.annotation.NonNull;
 
-import com.jjurisic.android.rest.MoviesListWrapper;
+import com.jjurisic.android.model.MovieModel;
+
+import java.util.List;
 
 /**
  * Created by jurisicJosip.
  */
 public interface MoviesView {
 
-    void setMovies(@NonNull MoviesListWrapper movies);
+    void setMovies(@NonNull List<MovieModel> movies);
 
     void showMovieDetails(long movieId);
 

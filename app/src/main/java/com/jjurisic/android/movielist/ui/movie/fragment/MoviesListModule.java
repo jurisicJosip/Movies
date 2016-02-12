@@ -21,6 +21,15 @@
 package com.jjurisic.android.movielist.ui.movie.fragment;
 
 
+import android.content.Context;
+
+import com.jjurisic.android.movielist.database.Database;
+import com.jjurisic.android.movielist.database.MoviesDatabase;
+import com.jjurisic.android.movielist.database.MoviesDatabaseImpl;
+import com.jjurisic.android.movielist.interactors.MoviesInteractor;
+import com.jjurisic.android.movielist.interactors.MoviesInteractorImpl;
+import com.jjurisic.android.movielist.model.DataManager;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -28,8 +37,10 @@ import dagger.Provides;
 public class MoviesListModule {
 
     private final MoviesView view;
+    private final Context context;
 
-    public MoviesListModule(MoviesView view) {
+    public MoviesListModule(Context context, MoviesView view) {
+        this.context = context;
         this.view = view;
     }
 
@@ -39,7 +50,32 @@ public class MoviesListModule {
     }
 
     @Provides
-    public MoviesPresenter providePresenter(MoviesView mainView) {
-        return new MoviesPresenterImpl(mainView);
+    public MoviesInteractor provideMoviesInteractor() {
+        return new MoviesInteractorImpl();
+    }
+
+    @Provides
+    public Context provideContext() {
+        return context;
+    }
+
+    @Provides
+    public Database provideDatabase(Context context) {
+        return new Database(context);
+    }
+
+    @Provides
+    public MoviesDatabase provideMoviesDatabase(Database database) {
+        return new MoviesDatabaseImpl(database);
+    }
+
+    @Provides
+    public DataManager provideDataManager(MoviesInteractor interactor, MoviesDatabase database) {
+        return new DataManager(interactor, database);
+    }
+
+    @Provides
+    public MoviesPresenter providePresenter(MoviesView mainView, DataManager dataManager) {
+        return new MoviesPresenterImpl(mainView, dataManager);
     }
 }

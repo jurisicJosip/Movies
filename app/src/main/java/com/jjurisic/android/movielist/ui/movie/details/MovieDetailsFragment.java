@@ -16,8 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.jjurisic.android.movielist.App;
 import com.jjurisic.android.movielist.AppComponent;
 import com.jjurisic.android.movielist.R;
 import com.jjurisic.android.movielist.ui.base.BaseFragment;
@@ -89,7 +91,7 @@ public class MovieDetailsFragment extends BaseFragment implements MovieDetailsVi
     protected void setupComponent(AppComponent appComponent) {
         DaggerMovieDetailsComponent.builder()
                 .appComponent(appComponent)
-                .moviesDetailsModule(new MoviesDetailsModule(this))
+                .moviesDetailsModule(new MoviesDetailsModule(this, getContext()))
                 .build()
                 .inject(this);
     }
@@ -191,7 +193,7 @@ public class MovieDetailsFragment extends BaseFragment implements MovieDetailsVi
 
     @Override
     public void showMessage(@NonNull Object message) {
-//        todo VolleyErrorHelper.handleErrorWithToast(message, getActivity());
+        Toast.makeText(App.get(), message.toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override
