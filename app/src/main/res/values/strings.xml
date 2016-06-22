@@ -10,4 +10,11 @@
     <string name="homepage">Homepage</string>
     <string name="release_date">Release Date</string>
     <string name="popularity">Popularity</string>
+    <string name="cannot_load_movie_details">Cannot load Movie Details</string>
+    <string name="cannot_show_movie_poster">Cannot show Movie Poster</string>
+    <string name="cannot_load_movie_homepage">Cannot load Movie Homepage</string>
+    <string name="cannot_show_movie_title">Cannot show Movie Title</string>
+    <string name="cannot_show_movie_image">Cannot show Movie Image</string>
+    <string name="cannot_load_movies">Cannot load Movies</string>
+    <string name="cannot_show_movie_webpage">Cannot show Movie Webpage</string>
 </resources>

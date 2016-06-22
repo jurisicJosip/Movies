@@ -1,24 +1,24 @@
 package com.jjurisic.android.movielist.ui.movie.fragment;
 
-import android.support.annotation.NonNull;
-
-import com.jjurisic.android.model.MovieModel;
+import com.jjurisic.android.movielist.model.model.MovieModel;
+import com.jjurisic.android.movielist.ui.base.BaseView;
 
 import java.util.List;
 
 /**
  * Created by jurisicJosip.
  */
-public interface MoviesView {
+public interface MoviesView extends BaseView {
 
-    void setMovies(@NonNull List<MovieModel> movies);
+    void showMovies(List<MovieModel> movies);
 
     void showMovieDetails(long movieId);
-
-    void showMessage(@NonNull Object message);
 
     void showProgress();
 
     void hideProgress();
 
+    void showCannotLoadMoviesError();
+
+    void showMoreMovies(List<MovieModel> movieModels);
 }

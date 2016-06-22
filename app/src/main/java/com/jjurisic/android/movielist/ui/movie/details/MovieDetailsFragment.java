@@ -9,7 +9,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,8 +19,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.jjurisic.android.movielist.App;
-import com.jjurisic.android.movielist.AppComponent;
 import com.jjurisic.android.movielist.R;
+import com.jjurisic.android.movielist.presentation.MovieDetailsPresenter;
 import com.jjurisic.android.movielist.ui.base.BaseFragment;
 import com.jjurisic.android.movielist.ui.movie.poster.MoviePosterActivity;
 import com.jjurisic.android.movielist.ui.webview.WebViewActivity;
@@ -37,33 +36,40 @@ import butterknife.OnClick;
  */
 public class MovieDetailsFragment extends BaseFragment implements MovieDetailsView {
 
-    //Bundle keys
     private static final String KEY_MOVIE_ID = "key_movie_id";
-    //Ui widgets
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
+
     @Bind(R.id.content_image)
     ImageView mMovieImageView;
+
     @Bind(R.id.content_description)
     TextView mDescriptionTextView;
+
     @Bind(R.id.content_rating)
     TextView mVoteRatingTextView;
+
     @Bind(R.id.content_genre)
     TextView mGenreTextView;
+
     @Bind(R.id.content_homepage)
     TextView mHomePageTextView;
+
     @Bind(R.id.content_date)
     TextView mDateTextView;
+
     @Bind(R.id.content_popularity)
     TextView mPopulrityTextView;
+
     @Bind(R.id.container_homepage)
     CardView mHomepageContainerView;
+
     @Inject
     MovieDetailsPresenter movieDetailsPresenter;
-    //Data
-    private long movieId;
 
     public static BaseFragment newInstance(long movieId) {
         Bundle b = new Bundle();
@@ -76,24 +82,16 @@ public class MovieDetailsFragment extends BaseFragment implements MovieDetailsVi
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
+        App.get().component().inject(this);
+        movieDetailsPresenter.setView(this);
 
         setHasOptionsMenu(true);
 
         Bundle args = getArguments();
-        if (args != null) {
-            if (args.containsKey(KEY_MOVIE_ID)) {
-                movieId = args.getLong(KEY_MOVIE_ID);
-            }
+        if (args != null && args.containsKey(KEY_MOVIE_ID)) {
+            long movieId = args.getLong(KEY_MOVIE_ID);
+            movieDetailsPresenter.setMovieId(movieId);
         }
-    }
-
-    @Override
-    protected void setupComponent(AppComponent appComponent) {
-        DaggerMovieDetailsComponent.builder()
-                .appComponent(appComponent)
-                .moviesDetailsModule(new MoviesDetailsModule(this, getContext()))
-                .build()
-                .inject(this);
     }
 
     @Override
@@ -135,17 +133,17 @@ public class MovieDetailsFragment extends BaseFragment implements MovieDetailsVi
 
     @Override
     protected void prepareData() {
-        movieDetailsPresenter.requestMovieDetails(movieId);
+        movieDetailsPresenter.requestMovieDetails();
     }
 
     @OnClick(R.id.container_homepage)
     void onHomePageContainerViewClick() {
-        movieDetailsPresenter.onMovieHomepageClick();
+        movieDetailsPresenter.loadMovieHomepage();
     }
 
     @OnClick(R.id.content_image)
     void onImageClick() {
-        movieDetailsPresenter.onMovieImageClick();
+        movieDetailsPresenter.loadPoster();
     }
 
     @Override
@@ -165,10 +163,8 @@ public class MovieDetailsFragment extends BaseFragment implements MovieDetailsVi
 
     @Override
     public void showMovieHomePage(String homepage) {
-        if (!TextUtils.isEmpty(homepage)) {
-            mHomePageTextView.setText(homepage);
-            mHomepageContainerView.setVisibility(View.VISIBLE);
-        }
+        mHomePageTextView.setText(homepage);
+        mHomepageContainerView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -192,19 +188,39 @@ public class MovieDetailsFragment extends BaseFragment implements MovieDetailsVi
     }
 
     @Override
-    public void showMessage(@NonNull Object message) {
-        Toast.makeText(App.get(), message.toString(), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
     public void showPoster(@NonNull String title, @NonNull String imageUrl) {
-        startActivity(MoviePosterActivity.getLaunchIntent(getActivity(), title, imageUrl));
+        getActivity().startActivity(MoviePosterActivity.getLaunchIntent(getActivity(), title, imageUrl));
         getActivity().overridePendingTransition(R.anim.bottom_up, R.anim.stay);
     }
 
     @Override
     public void showMovieWebPage(@NonNull String title, @NonNull String homepage) {
-        startActivity(WebViewActivity.getLaunchIntent(getActivity(), title, homepage));
+        getActivity().startActivity(WebViewActivity.getLaunchIntent(getActivity(), title, homepage));
         getActivity().overridePendingTransition(R.anim.bottom_up, R.anim.stay);
+    }
+
+    @Override
+    public void showCannotGetMovieDetailsError() {
+        Toast.makeText(App.get(), R.string.cannot_load_movie_details, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showCannotShowMoviePosterError() {
+        Toast.makeText(App.get(), R.string.cannot_show_movie_poster, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void cannotShowMovieHomepageError() {
+        Toast.makeText(App.get(), R.string.cannot_load_movie_homepage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgress() {
+        //ok nothing
+    }
+
+    @Override
+    public void hideProgress() {
+        //ok nothing
     }
 }

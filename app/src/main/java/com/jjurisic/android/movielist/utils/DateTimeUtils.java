@@ -22,4 +22,18 @@ public class DateTimeUtils {
     public static String formatDateFrom(Date date) {
         return DateUtils.getRelativeTimeSpanString(date.getTime()).toString();
     }
+
+    public static String getFormatedDateOrEmpty(String date) {
+        if (StringUtils.isEmpty(date)) {
+            return "";
+        }
+
+        try {
+            Date formattedDate = getDateFrom(date);
+            CharSequence dateSequence = DateUtils.getRelativeTimeSpanString(formattedDate.getTime());
+            return dateSequence.toString();
+        } catch (ParseException e) {
+            return "";
+        }
+    }
 }

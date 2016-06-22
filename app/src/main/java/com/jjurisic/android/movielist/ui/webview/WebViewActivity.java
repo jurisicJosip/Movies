@@ -11,9 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
-import com.jjurisic.android.movielist.AppComponent;
+import com.jjurisic.android.movielist.App;
 import com.jjurisic.android.movielist.R;
+import com.jjurisic.android.movielist.presentation.WebViewPresenter;
 import com.jjurisic.android.movielist.ui.base.BaseActivity;
 
 import javax.inject.Inject;
@@ -29,15 +31,15 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
     //Bundle keys
     public static final String KEY_URL = "key_url";
     private static final String KEY_NAME = "key_name";
+
     @Bind(R.id.webview)
     WebView mWebView;
+
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
+
     @Inject
     WebViewPresenter mWebViewPresenter;
-    // Data
-    private String mUrl;
-    private String mTitle;
 
     public static Intent getLaunchIntent(@NonNull Context from, @NonNull String url, @Nullable String title) {
         Intent intent = new Intent(from, WebViewActivity.class);
@@ -50,24 +52,23 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
+        App.get().component().inject(this);
+        mWebViewPresenter.setView(this);
         ButterKnife.bind(this);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            mUrl = extras.getString(KEY_URL);
-            mTitle = extras.getString(KEY_NAME);
+            String mUrl = extras.getString(KEY_URL);
+            String mTitle = extras.getString(KEY_NAME);
+
+            mWebViewPresenter.setTitle(mTitle);
+            mWebViewPresenter.setUrl(mUrl);
+
+            mWebViewPresenter.showTitle();
+            mWebViewPresenter.showUrl();
         }
 
         initUi();
-    }
-
-    @Override
-    protected void setupComponent(AppComponent appComponent) {
-        DaggerMovieWebComponent.builder()
-                .appComponent(appComponent)
-                .movieWebModule(new MovieWebModule(this))
-                .build()
-                .inject(this);
     }
 
     @Override
@@ -84,8 +85,6 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
                 return true;
             }
         });
-
-        mWebViewPresenter.loadData(mTitle, mUrl);
     }
 
     @Override
@@ -105,6 +104,16 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
     }
 
     @Override
+    public void showCannotShowTitleError() {
+        Toast.makeText(App.get(), R.string.cannot_show_movie_title, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showCannotShowWebpageError() {
+        Toast.makeText(App.get(), R.string.cannot_show_movie_webpage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
@@ -112,5 +121,15 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void showProgress() {
+        // ok nothing
+    }
+
+    @Override
+    public void hideProgress() {
+        // ok nothing
     }
 }

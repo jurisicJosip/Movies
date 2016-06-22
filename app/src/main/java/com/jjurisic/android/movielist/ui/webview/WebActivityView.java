@@ -1,14 +1,17 @@
 package com.jjurisic.android.movielist.ui.webview;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.jjurisic.android.movielist.ui.base.BaseView;
 
 /**
  * Created by jurisicJosip.
  */
-public interface WebActivityView {
+public interface WebActivityView extends BaseView {
 
-    void showTitle(@Nullable String title);
+    void showTitle(String title);
 
-    void showUrl(@NonNull String url);
+    void showUrl(String url);
+
+    void showCannotShowTitleError();
+
+    void showCannotShowWebpageError();
 }

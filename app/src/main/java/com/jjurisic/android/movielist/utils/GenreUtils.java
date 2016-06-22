@@ -2,7 +2,7 @@ package com.jjurisic.android.movielist.utils;
 
 import android.text.TextUtils;
 
-import com.jjurisic.android.rest.Genre;
+import com.jjurisic.android.movielist.model.rest.Genre;
 
 import java.util.List;
 

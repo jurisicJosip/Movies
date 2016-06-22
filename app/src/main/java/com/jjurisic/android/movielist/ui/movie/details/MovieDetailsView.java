@@ -1,11 +1,11 @@
 package com.jjurisic.android.movielist.ui.movie.details;
 
-import android.support.annotation.NonNull;
+import com.jjurisic.android.movielist.ui.base.BaseView;
 
 /**
  * Created by jurisicJosip.
  */
-public interface MovieDetailsView {
+public interface MovieDetailsView extends BaseView {
 
     void showMovieTitle(String title);
 
@@ -23,9 +23,13 @@ public interface MovieDetailsView {
 
     void showMovieImage(String imageUrl);
 
-    void showMessage(@NonNull Object message);
+    void showPoster(String title, String imageUrl);
 
-    void showPoster(@NonNull String title, @NonNull String imageUrl);
+    void showMovieWebPage(String title, String homepage);
 
-    void showMovieWebPage( @NonNull String title, @NonNull String homepage);
+    void showCannotGetMovieDetailsError();
+
+    void showCannotShowMoviePosterError();
+
+    void cannotShowMovieHomepageError();
 }

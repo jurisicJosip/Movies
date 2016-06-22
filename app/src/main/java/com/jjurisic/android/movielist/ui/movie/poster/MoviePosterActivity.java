@@ -8,10 +8,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.jjurisic.android.movielist.AppComponent;
+import com.jjurisic.android.movielist.App;
 import com.jjurisic.android.movielist.R;
+import com.jjurisic.android.movielist.presentation.MoviePosterPresenter;
 import com.jjurisic.android.movielist.ui.base.BaseActivity;
 
 import javax.inject.Inject;
@@ -49,6 +51,9 @@ public class MoviePosterActivity extends BaseActivity implements MoviePosterView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_poster);
+        App.get().component().inject(this);
+        moviePosterPresenter.setView(this);
+
         ButterKnife.bind(this);
 
         Bundle extras = getIntent().getExtras();
@@ -68,15 +73,6 @@ public class MoviePosterActivity extends BaseActivity implements MoviePosterView
     }
 
     @Override
-    protected void setupComponent(AppComponent appComponent) {
-        DaggerMoviePosterComponent.builder()
-                .appComponent(appComponent)
-                .moviePosterModule(new MoviePosterModule(this))
-                .build()
-                .inject(this);
-    }
-
-    @Override
     protected void initUi() {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -84,7 +80,11 @@ public class MoviePosterActivity extends BaseActivity implements MoviePosterView
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        moviePosterPresenter.loadData(mMovieTitle, mMoviePosterUrl);
+        moviePosterPresenter.setTitle(mMovieTitle);
+        moviePosterPresenter.setImage(mMoviePosterUrl);
+
+        moviePosterPresenter.showTitle();
+        moviePosterPresenter.showImage();
     }
 
     @Override
@@ -111,5 +111,25 @@ public class MoviePosterActivity extends BaseActivity implements MoviePosterView
     @Override
     public void showImage(@NonNull String imagePath) {
         Glide.with(this).load(imagePath).into(mPosterImageView);
+    }
+
+    @Override
+    public void showCannotShowTitleError() {
+        Toast.makeText(App.get(), R.string.cannot_show_movie_title, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showCannotShowImageError() {
+        Toast.makeText(App.get(), R.string.cannot_show_movie_image, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgress() {
+        // ok nothing
+    }
+
+    @Override
+    public void hideProgress() {
+        // ok nothing
     }
 }

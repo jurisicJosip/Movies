@@ -1,14 +1,17 @@
 package com.jjurisic.android.movielist.ui.movie.poster;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.jjurisic.android.movielist.ui.base.BaseView;
 
 /**
  * Created by jurisicJosip.
  */
-public interface MoviePosterView {
+public interface MoviePosterView extends BaseView {
 
-    void showTitle(@Nullable String title);
+    void showTitle(String title);
 
-    void showImage(@NonNull String imagePath);
+    void showImage(String imagePath);
+
+    void showCannotShowTitleError();
+
+    void showCannotShowImageError();
 }

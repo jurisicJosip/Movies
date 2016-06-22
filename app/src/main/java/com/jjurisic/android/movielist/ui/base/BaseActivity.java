@@ -6,9 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
-import com.jjurisic.android.movielist.App;
-import com.jjurisic.android.movielist.AppComponent;
-
 /**
  * Created by jurisicJosip.
  */
@@ -17,10 +14,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupComponent(App.get().component());
     }
-
-    protected abstract void setupComponent(AppComponent appComponent);
 
     protected abstract void initUi();
 

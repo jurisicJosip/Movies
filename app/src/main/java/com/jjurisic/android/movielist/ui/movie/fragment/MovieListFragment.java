@@ -13,15 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.jjurisic.android.model.MovieModel;
 import com.jjurisic.android.movielist.App;
-import com.jjurisic.android.movielist.AppComponent;
 import com.jjurisic.android.movielist.R;
+import com.jjurisic.android.movielist.model.model.MovieModel;
+import com.jjurisic.android.movielist.model.sort.MovieSortType;
+import com.jjurisic.android.movielist.presentation.MoviesPresenter;
 import com.jjurisic.android.movielist.ui.base.BaseFragment;
 import com.jjurisic.android.movielist.ui.base.adapter.OnAdapterLastItemReachListener;
 import com.jjurisic.android.movielist.ui.movie.adapter.MovieListAdapter;
 import com.jjurisic.android.movielist.ui.movie.details.MovieDetailsActivity;
-import com.jjurisic.android.sort.MovieSortType;
 
 import java.io.Serializable;
 import java.util.List;
@@ -38,14 +38,17 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
 
     //Bundle keys
     private static final String KEY_MOVIE_SORT_TYPE = "key_movie_sort_type";
+
     @Inject
     MoviesPresenter moviesPresenter;
+
     @Bind(R.id.refresh)
     SwipeRefreshLayout mSwipeRefreshLayout;
+
     @Bind(R.id.adapter_view)
     RecyclerView mRecyclerView;
+
     private MovieListAdapter mMoviesAdapter;
-    private MovieSortType mMovieSortType;
 
     @NonNull
     public static BaseFragment newInstance(@NonNull MovieSortType movieSortType) {
@@ -59,25 +62,19 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
+        App.get().component().inject(this);
+        moviesPresenter.setView(this);
 
         Bundle args = getArguments();
-        if (args != null) {
-            if (args.containsKey(KEY_MOVIE_SORT_TYPE)) {
-                Serializable serializable = args.getSerializable(KEY_MOVIE_SORT_TYPE);
-                if (serializable instanceof MovieSortType) {
-                    mMovieSortType = (MovieSortType) serializable;
-                }
+        if (args != null && args.containsKey(KEY_MOVIE_SORT_TYPE)) {
+            Serializable serializable = args.getSerializable(KEY_MOVIE_SORT_TYPE);
+            if (serializable instanceof MovieSortType) {
+                MovieSortType movieSortType = (MovieSortType) serializable;
+                moviesPresenter.setMovieSortType(movieSortType);
             }
+        } else {
+            throw new IllegalArgumentException("Provide MovieSortType in bundle!");
         }
-    }
-
-    @Override
-    protected void setupComponent(AppComponent appComponent) {
-        DaggerMoviesListComponent.builder()
-                .appComponent(appComponent)
-                .moviesListModule(new MoviesListModule(getContext(), this))
-                .build()
-                .inject(this);
     }
 
     @Nullable
@@ -102,7 +99,7 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
         mMoviesAdapter.setInfiniteAdapterListener(new OnAdapterLastItemReachListener() {
             @Override
             public void onLastItemReached() {
-                moviesPresenter.loadMoreMovies(mMovieSortType);
+                moviesPresenter.loadMoreMovies();
             }
         });
         mMoviesAdapter.setMovieItemClickListener(this);
@@ -119,12 +116,12 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
 
     @Override
     protected void prepareData() {
-        moviesPresenter.loadMovies(mMovieSortType);
+        moviesPresenter.loadMovies();
     }
 
     @Override
     public void onRefresh() {
-        moviesPresenter.loadMovies(mMovieSortType);
+        moviesPresenter.loadMovies();
     }
 
     @Override
@@ -133,20 +130,15 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
     }
 
     @Override
-    public void setMovies(@NonNull List<MovieModel> movies) {
+    public void showMovies(@NonNull List<MovieModel> movies) {
         mMoviesAdapter.setData(movies);
     }
 
     @Override
     public void showMovieDetails(long movieId) {
         Intent intent = MovieDetailsActivity.getLaunchIntent(getActivity(), movieId);
-        startActivity(intent);
+        getActivity().startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
-
-    @Override
-    public void showMessage(@NonNull Object message) {
-        Toast.makeText(App.get(), message.toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -157,5 +149,15 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
     @Override
     public void hideProgress() {
         mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void showCannotLoadMoviesError() {
+        Toast.makeText(App.get(), R.string.cannot_load_movies, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showMoreMovies(List<MovieModel> movieModels) {
+        mMoviesAdapter.addData(movieModels);
     }
 }

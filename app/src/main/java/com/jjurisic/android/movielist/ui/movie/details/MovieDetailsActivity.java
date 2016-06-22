@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.jjurisic.android.movielist.AppComponent;
 import com.jjurisic.android.movielist.R;
 import com.jjurisic.android.movielist.ui.base.BaseActivity;
 
@@ -33,13 +32,8 @@ public class MovieDetailsActivity extends BaseActivity {
             long movieId = extras.getLong(KEY_MOVIE_ID);
             replaceFragment(R.id.fragment_container, MovieDetailsFragment.newInstance(movieId), false);
         } else {
-            throw new IllegalArgumentException("You must provide MovieId in bundle");
+            throw new IllegalArgumentException("You must provide MovieId in the bundle");
         }
-    }
-
-    @Override
-    protected void setupComponent(AppComponent appComponent) {
-        //ok nothing
     }
 
     @Override

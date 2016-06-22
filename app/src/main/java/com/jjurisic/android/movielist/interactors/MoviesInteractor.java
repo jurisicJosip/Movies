@@ -1,9 +1,9 @@
 package com.jjurisic.android.movielist.interactors;
 
 
-import com.jjurisic.android.rest.MovieDetails;
-import com.jjurisic.android.rest.MoviesListWrapper;
-import com.jjurisic.android.sort.MovieSortType;
+import com.jjurisic.android.movielist.model.rest.MovieDetails;
+import com.jjurisic.android.movielist.model.rest.MoviesListWrapper;
+import com.jjurisic.android.movielist.model.sort.MovieSortType;
 
 import rx.Observable;
 

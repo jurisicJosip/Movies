@@ -1,10 +1,10 @@
 package com.jjurisic.android.movielist.interactors;
 
 
-import com.jjurisic.android.movielist.App;
-import com.jjurisic.android.rest.MovieDetails;
-import com.jjurisic.android.rest.MoviesListWrapper;
-import com.jjurisic.android.sort.MovieSortType;
+import com.jjurisic.android.movielist.api.MoviesApiService;
+import com.jjurisic.android.movielist.model.rest.MovieDetails;
+import com.jjurisic.android.movielist.model.rest.MoviesListWrapper;
+import com.jjurisic.android.movielist.model.sort.MovieSortType;
 
 import rx.Observable;
 
@@ -14,14 +14,19 @@ import rx.Observable;
  */
 public class MoviesInteractorImpl implements MoviesInteractor {
 
+    private MoviesApiService backendApiService;
+
+    public MoviesInteractorImpl(MoviesApiService backendApiService) {
+        this.backendApiService = backendApiService;
+    }
 
     @Override
     public Observable<MoviesListWrapper> requestMovies(int page, MovieSortType movieSortType) {
-        return App.get().component().getMoviesApiService().getMoviesList(movieSortType.name().toLowerCase(), page);
+        return backendApiService.getMoviesList(movieSortType.name().toLowerCase(), page);
     }
 
     @Override
     public Observable<MovieDetails> requestMovieDetails(long id) {
-        return  App.get().component().getMoviesApiService().getMovieDetails(id);
+        return backendApiService.getMovieDetails(id);
     }
 }

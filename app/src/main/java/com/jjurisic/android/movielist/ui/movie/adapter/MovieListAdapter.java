@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.jjurisic.android.model.MovieModel;
+import com.jjurisic.android.movielist.model.model.MovieModel;
 import com.jjurisic.android.movielist.R;
 import com.jjurisic.android.movielist.ui.base.adapter.InfiniteRecycleViewAdapter;
 import com.jjurisic.android.movielist.utils.DateTimeUtils;
@@ -26,11 +26,9 @@ import java.util.List;
  */
 public class MovieListAdapter extends InfiniteRecycleViewAdapter {
 
-    //data
     private final List<MovieModel> mDataSource = new ArrayList<>();
     private int totalItems = Integer.MAX_VALUE;
 
-    //listener
     private OnMovieItemClickListener mMovieItemClickListener;
 
     public void addData(@NonNull List<MovieModel> data) {
@@ -86,12 +84,10 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
 
     private static class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        //Ui widgets
         private final AppCompatTextView mMovieTitleTextView;
         private final AppCompatTextView mMovieDateTextView;
         private final ImageView mMovieImageView;
 
-        //data
         private MovieModel mMovie;
 
         private OnMovieItemClickListener mMovieItemClickListener;
