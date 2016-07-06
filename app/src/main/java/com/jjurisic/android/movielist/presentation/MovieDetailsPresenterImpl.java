@@ -9,7 +9,7 @@ import com.jjurisic.android.movielist.utils.ImageUtils;
 import com.jjurisic.android.movielist.utils.StringUtils;
 
 import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.Scheduler;
 import rx.schedulers.Schedulers;
 
 /**
@@ -21,10 +21,13 @@ public class MovieDetailsPresenterImpl implements MovieDetailsPresenter {
     private MovieModel movieDetails;
 
     private MovieDetailsView movieDetailsView;
-    private final DataManagerInterface dataManager;
 
-    public MovieDetailsPresenterImpl(DataManagerInterface dataManager) {
+    private final DataManagerInterface dataManager;
+    private final Scheduler androidScheduler;
+
+    public MovieDetailsPresenterImpl(DataManagerInterface dataManager, Scheduler androidScheduler) {
         this.dataManager = dataManager;
+        this.androidScheduler = androidScheduler;
     }
 
     @Override
@@ -33,7 +36,7 @@ public class MovieDetailsPresenterImpl implements MovieDetailsPresenter {
 
         dataManager.getMovie(movieId)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(androidScheduler)
                 .subscribe(bindMovieObserver());
     }
 

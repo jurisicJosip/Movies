@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import rx.Observable;
+import rx.Scheduler;
 
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -38,12 +39,15 @@ public class MovieDetailsPresenterImplTest {
     @Mock
     Observable<MovieModel> movieModelObservable;
 
+    @Mock
+    Scheduler androidScheduler;
+
     MovieDetailsPresenter presenter;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        presenter = new MovieDetailsPresenterImpl(dataManager);
+        presenter = new MovieDetailsPresenterImpl(dataManager, androidScheduler);
         presenter.setView(view);
     }
 
@@ -108,13 +112,13 @@ public class MovieDetailsPresenterImplTest {
     }
 
     @Test
-    public void testLoadMovieHomepageWithNullMovieModelShowError(){
+    public void testLoadMovieHomepageWithNullMovieModelShowError() {
         presenter.loadMovieHomepage();
         verify(view).cannotShowMovieHomepageError();
     }
 
     @Test
-    public void testLoadMovieHomepageWitMovieModelShowHomepage(){
+    public void testLoadMovieHomepageWitMovieModelShowHomepage() {
         MovieModel data = new MovieModel();
         presenter.bindMovieObserver().onNext(data);
         presenter.loadMovieHomepage();
@@ -122,7 +126,7 @@ public class MovieDetailsPresenterImplTest {
     }
 
     @Test
-    public void setMovieIdVerifyNoViewInteractions(){
+    public void setMovieIdVerifyNoViewInteractions() {
         presenter.setMovieId(MOVIE_ID);
         verifyZeroInteractions(view);
     }

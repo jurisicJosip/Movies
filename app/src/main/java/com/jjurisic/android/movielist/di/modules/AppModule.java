@@ -18,9 +18,11 @@
  *
  */
 
-package com.jjurisic.android.movielist;
+package com.jjurisic.android.movielist.di.modules;
 
 import android.app.Application;
+
+import com.jjurisic.android.movielist.App;
 
 import javax.inject.Singleton;
 
@@ -45,5 +47,4 @@ public class AppModule {
     public Application provideApplication() {
         return app;
     }
-
 }

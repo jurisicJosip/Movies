@@ -1,12 +1,15 @@
-package com.jjurisic.android.movielist.data;
+package com.jjurisic.android.movielist.di.modules;
 
-import com.jjurisic.android.movielist.api.MoviesApiModule;
 import com.jjurisic.android.movielist.api.MoviesApiService;
+import com.jjurisic.android.movielist.data.DataManager;
+import com.jjurisic.android.movielist.data.DataManagerInterface;
 import com.jjurisic.android.movielist.interactors.MoviesInteractor;
 import com.jjurisic.android.movielist.interactors.MoviesInteractorImpl;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.Scheduler;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Josip Jurisic
@@ -24,4 +27,5 @@ public class DataModule {
     public DataManagerInterface provideDataManagerInterface(MoviesInteractor interactor) {
         return new DataManager(interactor);
     }
+
 }

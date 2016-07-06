@@ -1,6 +1,7 @@
 package com.jjurisic.android.movielist.data;
 
 import com.jjurisic.android.movielist.api.MoviesApiService;
+import com.jjurisic.android.movielist.di.modules.DataModule;
 import com.jjurisic.android.movielist.interactors.MoviesInteractor;
 
 import org.junit.Before;

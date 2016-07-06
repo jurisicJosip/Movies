@@ -1,7 +1,9 @@
-package com.jjurisic.android.movielist.api;
+package com.jjurisic.android.movielist.di.modules;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.jjurisic.android.movielist.api.MoviesApiService;
+import com.jjurisic.android.movielist.api.MoviesRequestInterceptor;
 import com.squareup.okhttp.OkHttpClient;
 
 import javax.inject.Singleton;

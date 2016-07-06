@@ -1,9 +1,9 @@
 package com.jjurisic.android.movielist;
 
 
-import com.jjurisic.android.movielist.api.MoviesApiModule;
-import com.jjurisic.android.movielist.api.MoviesApiService;
-import com.jjurisic.android.movielist.presentation.PresentationModule;
+import com.jjurisic.android.movielist.di.modules.AppModule;
+import com.jjurisic.android.movielist.di.modules.MoviesApiModule;
+import com.jjurisic.android.movielist.di.modules.PresentationModule;
 import com.jjurisic.android.movielist.ui.movie.details.MovieDetailsFragment;
 import com.jjurisic.android.movielist.ui.movie.fragment.MovieListFragment;
 import com.jjurisic.android.movielist.ui.movie.poster.MoviePosterActivity;
@@ -27,8 +27,6 @@ import dagger.Component;
 public interface AppComponent {
 
     void inject(App app);
-
-    MoviesApiService getMoviesApiService();
 
     void inject(MovieListFragment movieListFragment);
 

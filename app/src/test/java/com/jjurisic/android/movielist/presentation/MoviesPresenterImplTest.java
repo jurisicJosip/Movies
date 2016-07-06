@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.Scheduler;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -32,18 +32,25 @@ public class MoviesPresenterImplTest {
 
 
     private static final long KEY_MOVIE_ID = 0;
-    @Mock
-    public MoviesView view;
 
     @Mock
-    public DataManagerInterface dataManager;
+    MoviesView view;
+
+    @Mock
+    DataManagerInterface dataManager;
+
+    @Mock
+    Scheduler androidScheduler;
+
+    @Mock
+    Observable<List<MovieModel>> movieListObservable;
 
     private MoviesPresenter presenter;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        presenter = new MoviesPresenterImpl(dataManager);
+        presenter = new MoviesPresenterImpl(dataManager, androidScheduler);
         presenter.setView(view);
     }
 
@@ -61,7 +68,7 @@ public class MoviesPresenterImplTest {
 
     @Test
     public void testLoadMoviesWithMoviesSortTypeShowProgress() {
-        when(dataManager.getMovies(anyInt(), any(MovieSortType.class))).thenReturn(Mockito.mock(Observable.class));
+        when(dataManager.getMovies(anyInt(), any(MovieSortType.class))).thenReturn(movieListObservable);
         presenter.setMovieSortType(MovieSortType.POPULAR);
         presenter.loadMovies();
         verify(view).showProgress();
@@ -69,10 +76,10 @@ public class MoviesPresenterImplTest {
 
     @Test
     public void testLoadMoviesWithMoviesSortTypeCallDataManager() {
-        when(dataManager.getMovies(anyInt(), any(MovieSortType.class))).thenReturn(Mockito.mock(Observable.class));
+        when(dataManager.getMovies(anyInt(), any(MovieSortType.class))).thenReturn(movieListObservable);
         presenter.setMovieSortType(MovieSortType.POPULAR);
         presenter.loadMovies();
-        verify(dataManager).getMovies(0, MovieSortType.POPULAR);
+        verify(dataManager).getMovies(1, MovieSortType.POPULAR);
     }
 
     @Test
@@ -109,7 +116,7 @@ public class MoviesPresenterImplTest {
     @Test
     public void testLoadMoviesBindMoviesObserverCallOnNextWithLoadMoreResponseShowCannotLoadMoviesError() {
         List<MovieModel> modelList = new ArrayList<>();
-        presenter.setPage(1);
+        presenter.setPage(2);
         presenter.bindMovieListObserver().onNext(modelList);
         verify(view).showMoreMovies(modelList);
     }
@@ -122,9 +129,9 @@ public class MoviesPresenterImplTest {
 
     @Test
     public void testLoadMoreMoviesWithMovieSSortTypeCallDataManager() {
-        when(dataManager.getMovies(anyInt(), any(MovieSortType.class))).thenReturn(Mockito.mock(Observable.class));
+        when(dataManager.getMovies(anyInt(), any(MovieSortType.class))).thenReturn(movieListObservable);
         presenter.setMovieSortType(MovieSortType.POPULAR);
         presenter.loadMoreMovies();
-        verify(dataManager).getMovies(1, MovieSortType.POPULAR);
+        verify(dataManager).getMovies(2, MovieSortType.POPULAR);
     }
 }

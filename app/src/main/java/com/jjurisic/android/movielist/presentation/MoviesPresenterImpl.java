@@ -9,7 +9,7 @@ import com.jjurisic.android.movielist.ui.movie.fragment.MoviesView;
 import java.util.List;
 
 import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.Scheduler;
 import rx.schedulers.Schedulers;
 
 /**
@@ -19,12 +19,14 @@ public class MoviesPresenterImpl implements MoviesPresenter {
 
     private MoviesView moviesView;
     private MovieSortType movieSortType;
-    private int page;
+    private int page = 1;
 
     private final DataManagerInterface dataManager;
+    private final Scheduler androidScheduler;
 
-    public MoviesPresenterImpl(DataManagerInterface dataManager) {
+    public MoviesPresenterImpl(DataManagerInterface dataManager, Scheduler androidScheduler) {
         this.dataManager = dataManager;
+        this.androidScheduler = androidScheduler;
     }
 
     @Override
@@ -40,11 +42,11 @@ public class MoviesPresenterImpl implements MoviesPresenter {
         }
 
         moviesView.showProgress();
-        page = 0;
+        page = 1;
 
         dataManager.getMovies(page, movieSortType)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(androidScheduler)
                 .subscribe(bindMovieListObserver());
     }
 
@@ -64,14 +66,14 @@ public class MoviesPresenterImpl implements MoviesPresenter {
 
             @Override
             public void onNext(List<MovieModel> movieModels) {
-                if(movieModels==null){
+                if (movieModels == null) {
                     moviesView.showCannotLoadMoviesError();
                     return;
                 }
 
-                if(page == 0){
+                if (page == 1) {
                     moviesView.showMovies(movieModels);
-                }else{
+                } else {
                     moviesView.showMoreMovies(movieModels);
                 }
             }
@@ -88,7 +90,7 @@ public class MoviesPresenterImpl implements MoviesPresenter {
         page = page + 1;
         dataManager.getMovies(page, movieSortType)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(androidScheduler)
                 .subscribe(bindMovieListObserver());
     }
 

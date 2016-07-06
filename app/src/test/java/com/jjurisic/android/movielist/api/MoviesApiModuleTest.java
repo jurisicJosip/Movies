@@ -1,5 +1,7 @@
 package com.jjurisic.android.movielist.api;
 
+import com.jjurisic.android.movielist.di.modules.MoviesApiModule;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

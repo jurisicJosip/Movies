@@ -1,11 +1,14 @@
 package com.jjurisic.android.movielist.presentation;
 
 import com.jjurisic.android.movielist.data.DataManagerInterface;
+import com.jjurisic.android.movielist.di.modules.PresentationModule;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import rx.Scheduler;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -15,24 +18,27 @@ import static org.junit.Assert.assertNotNull;
 public class PresentationModuleTest {
 
     @Mock
-    public DataManagerInterface dataManager;
+    DataManagerInterface dataManager;
+
+    @Mock
+    Scheduler androidScheduler;
 
     private PresentationModule presentationModule;
 
     @Before
-    public void setup(){
+    public void setup() {
         MockitoAnnotations.initMocks(this);
         presentationModule = new PresentationModule();
     }
 
     @Test
     public void testProvideMoviesPresenter() throws Exception {
-        assertNotNull(presentationModule.provideMoviesPresenter(dataManager));
+        assertNotNull(presentationModule.provideMoviesPresenter(dataManager, androidScheduler));
     }
 
     @Test
     public void testProvideMovieDetailsPresenter() throws Exception {
-        assertNotNull(presentationModule.provideMovieDetailsPresenter(dataManager));
+        assertNotNull(presentationModule.provideMovieDetailsPresenter(dataManager, androidScheduler));
     }
 
     @Test

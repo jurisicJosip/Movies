@@ -1,5 +1,6 @@
 package com.jjurisic.android.movielist.api;
 
+import com.jjurisic.android.movielist.di.modules.MoviesApiModule;
 import com.squareup.okhttp.OkHttpClient;
 
 import org.junit.Before;
