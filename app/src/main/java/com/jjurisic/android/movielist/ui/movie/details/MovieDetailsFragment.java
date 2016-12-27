@@ -17,13 +17,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.jjurisic.android.movielist.App;
 import com.jjurisic.android.movielist.R;
+import com.jjurisic.android.movielist.di.activity.ActivityContextModule;
+import com.jjurisic.android.movielist.di.activity.DaggerActivityComponent;
+import com.jjurisic.android.movielist.di.activity.FragmentManagerModule;
 import com.jjurisic.android.movielist.presentation.MovieDetailsPresenter;
 import com.jjurisic.android.movielist.ui.base.BaseFragment;
 import com.jjurisic.android.movielist.ui.movie.poster.MoviePosterActivity;
 import com.jjurisic.android.movielist.ui.webview.WebViewActivity;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -71,6 +74,9 @@ public class MovieDetailsFragment extends BaseFragment implements MovieDetailsVi
     @Inject
     MovieDetailsPresenter movieDetailsPresenter;
 
+    @Inject
+    Picasso picasso;
+
     public static BaseFragment newInstance(long movieId) {
         Bundle b = new Bundle();
         b.putLong(KEY_MOVIE_ID, movieId);
@@ -82,7 +88,14 @@ public class MovieDetailsFragment extends BaseFragment implements MovieDetailsVi
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
-        App.get().component().inject(this);
+
+        DaggerActivityComponent
+                .builder()
+                .appComponent(App.get().component())
+                .fragmentManagerModule(new FragmentManagerModule(getFragmentManager()))
+                .activityContextModule(new ActivityContextModule(getActivity()))
+                .build().inject(this);
+
         movieDetailsPresenter.setView(this);
 
         setHasOptionsMenu(true);
@@ -184,18 +197,18 @@ public class MovieDetailsFragment extends BaseFragment implements MovieDetailsVi
 
     @Override
     public void showMovieImage(String path) {
-        Glide.with(MovieDetailsFragment.this).load(path).centerCrop().into(mMovieImageView);
+        picasso.load(path).fit().centerCrop().into(mMovieImageView);
     }
 
     @Override
     public void showPoster(@NonNull String title, @NonNull String imageUrl) {
-        getActivity().startActivity(MoviePosterActivity.getLaunchIntent(getActivity(), title, imageUrl));
+        startActivity(MoviePosterActivity.getLaunchIntent(getActivity(), title, imageUrl));
         getActivity().overridePendingTransition(R.anim.bottom_up, R.anim.stay);
     }
 
     @Override
     public void showMovieWebPage(@NonNull String title, @NonNull String homepage) {
-        getActivity().startActivity(WebViewActivity.getLaunchIntent(getActivity(), title, homepage));
+        startActivity(WebViewActivity.getLaunchIntent(getActivity(), title, homepage));
         getActivity().overridePendingTransition(R.anim.bottom_up, R.anim.stay);
     }
 

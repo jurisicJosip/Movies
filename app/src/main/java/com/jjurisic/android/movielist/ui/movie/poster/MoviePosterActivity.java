@@ -10,11 +10,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.jjurisic.android.movielist.App;
 import com.jjurisic.android.movielist.R;
+import com.jjurisic.android.movielist.di.activity.ActivityContextModule;
+import com.jjurisic.android.movielist.di.activity.DaggerActivityComponent;
+import com.jjurisic.android.movielist.di.activity.FragmentManagerModule;
 import com.jjurisic.android.movielist.presentation.MoviePosterPresenter;
 import com.jjurisic.android.movielist.ui.base.BaseActivity;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -30,12 +33,19 @@ public class MoviePosterActivity extends BaseActivity implements MoviePosterView
     //Bundle keys
     private static final String KEY_MOVIE_URL = "key_movie_url";
     private static final String KEY_NAME = "key_name";
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+
     @Bind(R.id.content_image)
     PhotoView mPosterImageView;
+
     @Inject
     MoviePosterPresenter moviePosterPresenter;
+
+    @Inject
+    Picasso picasso;
+
     //Data
     private String mMoviePosterUrl;
     private String mMovieTitle;
@@ -51,7 +61,14 @@ public class MoviePosterActivity extends BaseActivity implements MoviePosterView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_poster);
-        App.get().component().inject(this);
+
+        DaggerActivityComponent
+                .builder()
+                .appComponent(App.get().component())
+                .fragmentManagerModule(new FragmentManagerModule(getSupportFragmentManager()))
+                .activityContextModule(new ActivityContextModule(this))
+                .build().inject(this);
+
         moviePosterPresenter.setView(this);
 
         ButterKnife.bind(this);
@@ -110,7 +127,7 @@ public class MoviePosterActivity extends BaseActivity implements MoviePosterView
 
     @Override
     public void showImage(@NonNull String imagePath) {
-        Glide.with(this).load(imagePath).into(mPosterImageView);
+        picasso.load(imagePath).into(mPosterImageView);
     }
 
     @Override

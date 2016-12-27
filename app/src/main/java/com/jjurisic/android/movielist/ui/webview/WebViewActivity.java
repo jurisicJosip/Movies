@@ -4,8 +4,6 @@ package com.jjurisic.android.movielist.ui.webview;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -15,6 +13,9 @@ import android.widget.Toast;
 
 import com.jjurisic.android.movielist.App;
 import com.jjurisic.android.movielist.R;
+import com.jjurisic.android.movielist.di.activity.ActivityContextModule;
+import com.jjurisic.android.movielist.di.activity.DaggerActivityComponent;
+import com.jjurisic.android.movielist.di.activity.FragmentManagerModule;
 import com.jjurisic.android.movielist.presentation.WebViewPresenter;
 import com.jjurisic.android.movielist.ui.base.BaseActivity;
 
@@ -41,7 +42,7 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
     @Inject
     WebViewPresenter mWebViewPresenter;
 
-    public static Intent getLaunchIntent(@NonNull Context from, @NonNull String url, @Nullable String title) {
+    public static Intent getLaunchIntent(Context from, String url, String title) {
         Intent intent = new Intent(from, WebViewActivity.class);
         intent.putExtra(KEY_URL, url);
         intent.putExtra(KEY_NAME, title);
@@ -52,7 +53,14 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
-        App.get().component().inject(this);
+
+        DaggerActivityComponent
+                .builder()
+                .appComponent(App.get().component())
+                .fragmentManagerModule(new FragmentManagerModule(getSupportFragmentManager()))
+                .activityContextModule(new ActivityContextModule(this))
+                .build().inject(this);
+
         mWebViewPresenter.setView(this);
         ButterKnife.bind(this);
 
@@ -63,12 +71,10 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
 
             mWebViewPresenter.setTitle(mTitle);
             mWebViewPresenter.setUrl(mUrl);
-
-            mWebViewPresenter.showTitle();
-            mWebViewPresenter.showUrl();
         }
 
         initUi();
+        showContent();
     }
 
     @Override
@@ -87,6 +93,11 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
         });
     }
 
+    private void showContent() {
+        mWebViewPresenter.showTitle();
+        mWebViewPresenter.showUrl();
+    }
+
     @Override
     public void onBackPressed() {
         finish();
@@ -94,12 +105,12 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
     }
 
     @Override
-    public void showTitle(@Nullable String title) {
+    public void showTitle(String title) {
         mToolbar.setTitle(title);
     }
 
     @Override
-    public void showUrl(@NonNull String url) {
+    public void showUrl(String url) {
         mWebView.loadUrl(url);
     }
 

@@ -3,7 +3,12 @@ package com.jjurisic.android.movielist;
 
 import android.app.Application;
 
-import com.jjurisic.android.movielist.di.modules.AppModule;
+import com.jjurisic.android.movielist.di.application.AppComponent;
+import com.jjurisic.android.movielist.di.application.AppContextModule;
+import com.jjurisic.android.movielist.di.application.DaggerAppComponent;
+import com.squareup.leakcanary.LeakCanary;
+
+import timber.log.Timber;
 
 /**
  * Created by Josip Jurisic
@@ -23,10 +28,18 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+
+            if (!LeakCanary.isInAnalyzerProcess(this)) {
+                LeakCanary.install(this);
+            }
+        }
+
         sInstance = this;
 
         component = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
+                .appContextModule(new AppContextModule(this))
                 .build();
 
         component.inject(this);

@@ -1,6 +1,8 @@
-package com.jjurisic.android.movielist.di.modules;
+package com.jjurisic.android.movielist.di.activity;
 
 import com.jjurisic.android.movielist.data.DataManagerInterface;
+import com.jjurisic.android.movielist.presentation.MovieAdapterPresenter;
+import com.jjurisic.android.movielist.presentation.MovieAdapterPresenterImpl;
 import com.jjurisic.android.movielist.presentation.MovieDetailsPresenter;
 import com.jjurisic.android.movielist.presentation.MovieDetailsPresenterImpl;
 import com.jjurisic.android.movielist.presentation.MoviePosterPresenter;
@@ -18,31 +20,42 @@ import rx.android.schedulers.AndroidSchedulers;
 /**
  * Created by Josip Jurisic
  */
-@Module(includes = DataModule.class)
+@Module
 public class PresentationModule {
 
     @Provides
+    @ActivityScope
     public Scheduler provideAndroidScheduler() {
         return AndroidSchedulers.mainThread();
     }
 
     @Provides
+    @ActivityScope
     public MoviesPresenter provideMoviesPresenter(DataManagerInterface dataManagerInterface, Scheduler androidScheduler) {
         return new MoviesPresenterImpl(dataManagerInterface, androidScheduler);
     }
 
     @Provides
+    @ActivityScope
     public MovieDetailsPresenter provideMovieDetailsPresenter(DataManagerInterface dataManagerInterface, Scheduler androidScheduler) {
         return new MovieDetailsPresenterImpl(dataManagerInterface, androidScheduler);
     }
 
     @Provides
+    @ActivityScope
     public WebViewPresenter provideWebViewPresenter() {
         return new WebViewPresenterImpl();
     }
 
     @Provides
+    @ActivityScope
     public MoviePosterPresenter provideMoviePosterPresenter() {
         return new MoviePosterPresenterImpl();
+    }
+
+    @Provides
+    @ActivityScope
+    public MovieAdapterPresenter provideMovieAdapterPresenter() {
+        return new MovieAdapterPresenterImpl();
     }
 }

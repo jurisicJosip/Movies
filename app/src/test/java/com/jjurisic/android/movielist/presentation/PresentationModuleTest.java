@@ -1,7 +1,7 @@
 package com.jjurisic.android.movielist.presentation;
 
 import com.jjurisic.android.movielist.data.DataManagerInterface;
-import com.jjurisic.android.movielist.di.modules.PresentationModule;
+import com.jjurisic.android.movielist.di.activity.PresentationModule;
 
 import org.junit.Before;
 import org.junit.Test;

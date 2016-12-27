@@ -36,4 +36,8 @@ public class DateTimeUtils {
             return "";
         }
     }
+
+    public static void getFancyDate(String date) {
+
+    }
 }

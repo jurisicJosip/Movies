@@ -24,15 +24,6 @@ public abstract class InfiniteRecycleViewAdapter extends RecyclerView.Adapter {
         }
     }
 
-    protected int calculateNewTotal(int totalItems) {
-        int currentItems = getItemCount();
-        if (totalItems > currentItems) {
-            return totalItems;
-        } else {
-            return currentItems;
-        }
-    }
-
     public abstract int getTotalItems();
 
 }

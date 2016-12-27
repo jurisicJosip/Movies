@@ -4,9 +4,9 @@ package com.jjurisic.android.movielist.api;
 import com.jjurisic.android.movielist.model.rest.MovieDetails;
 import com.jjurisic.android.movielist.model.rest.MoviesListWrapper;
 
-import retrofit.http.GET;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -14,11 +14,11 @@ import rx.Observable;
  */
 public interface MoviesApiService {
 
-    @GET("/movie/{movieType}")
+    @GET("3/movie/{movieType}")
     Observable<MoviesListWrapper> getMoviesList(@Path("movieType") String movieType, @Query("page") int page);
 
 
-    @GET("/movie/{movieId}")
+    @GET("3/movie/{movieId}")
     Observable<MovieDetails> getMovieDetails(@Path("movieId") long movieId);
 
 }

@@ -1,4 +1,4 @@
-package com.jjurisic.android.movielist.di;
+package com.jjurisic.android.movielist.di.activity;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

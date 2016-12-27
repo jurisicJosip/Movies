@@ -1,24 +1,20 @@
 package com.jjurisic.android.movielist.ui.movie.adapter;
 
+
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.jjurisic.android.movielist.model.model.MovieModel;
 import com.jjurisic.android.movielist.R;
+import com.jjurisic.android.movielist.model.model.MovieModel;
+import com.jjurisic.android.movielist.presentation.MovieAdapterPresenter;
 import com.jjurisic.android.movielist.ui.base.adapter.InfiniteRecycleViewAdapter;
-import com.jjurisic.android.movielist.utils.DateTimeUtils;
-import com.jjurisic.android.movielist.utils.ImageUtils;
+import com.squareup.picasso.Picasso;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,6 +24,16 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
 
     private final List<MovieModel> mDataSource = new ArrayList<>();
     private int totalItems = Integer.MAX_VALUE;
+
+    private final Picasso picasso;
+    private final Context from;
+    private MovieAdapterPresenter presenter;
+
+    public MovieListAdapter(Context from, Picasso picasso, MovieAdapterPresenter presenter) {
+        this.picasso = picasso;
+        this.from = from;
+        this.presenter = presenter;
+    }
 
     private OnMovieItemClickListener mMovieItemClickListener;
 
@@ -48,8 +54,8 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_movie, parent, false);
-        return new MovieViewHolder(view);
+        View view = LayoutInflater.from(from).inflate(R.layout.list_item_movie, parent, false);
+        return new MovieViewHolder(view, picasso, presenter);
     }
 
     @Override
@@ -74,63 +80,7 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
         return totalItems;
     }
 
-    public void setTotalItems(int total) {
-        totalItems = total;
-    }
-
     public interface OnMovieItemClickListener {
         void onMovieItemClick(@NonNull MovieModel movie);
-    }
-
-    private static class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private final AppCompatTextView mMovieTitleTextView;
-        private final AppCompatTextView mMovieDateTextView;
-        private final ImageView mMovieImageView;
-
-        private MovieModel mMovie;
-
-        private OnMovieItemClickListener mMovieItemClickListener;
-
-        public MovieViewHolder(View view) {
-            super(view);
-
-            mMovieTitleTextView = (AppCompatTextView) view.findViewById(R.id.content_title);
-            mMovieDateTextView = (AppCompatTextView) view.findViewById(R.id.content_date);
-            mMovieImageView = (ImageView) view.findViewById(R.id.content_image);
-
-            view.setOnClickListener(this);
-        }
-
-        public void setListener(OnMovieItemClickListener listener) {
-            this.mMovieItemClickListener = listener;
-        }
-
-        public void setData(@NonNull MovieModel movie) {
-            mMovie = movie;
-
-            mMovieTitleTextView.setText(movie.getName());
-
-            String date = movie.getReleaseDate();
-            if (date != null) {
-                try {
-                    Date formattedDate = DateTimeUtils.getDateFrom(date);
-                    CharSequence dateSequence = DateUtils.getRelativeTimeSpanString(formattedDate.getTime());
-                    mMovieDateTextView.setText(dateSequence);
-                } catch (ParseException e) {
-                    //ok nothing
-                }
-            }
-
-            String imageUrl = ImageUtils.getImageThumbFrom(movie.getPosterPath());
-            Glide.with(itemView.getContext()).load(imageUrl).centerCrop().into(mMovieImageView);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (mMovieItemClickListener != null) {
-                mMovieItemClickListener.onMovieItemClick(mMovie);
-            }
-        }
     }
 }

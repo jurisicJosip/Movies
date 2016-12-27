@@ -15,6 +15,9 @@ import android.widget.Toast;
 
 import com.jjurisic.android.movielist.App;
 import com.jjurisic.android.movielist.R;
+import com.jjurisic.android.movielist.di.activity.ActivityContextModule;
+import com.jjurisic.android.movielist.di.activity.DaggerActivityComponent;
+import com.jjurisic.android.movielist.di.activity.FragmentManagerModule;
 import com.jjurisic.android.movielist.model.model.MovieModel;
 import com.jjurisic.android.movielist.model.sort.MovieSortType;
 import com.jjurisic.android.movielist.presentation.MoviesPresenter;
@@ -48,7 +51,8 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
     @Bind(R.id.adapter_view)
     RecyclerView mRecyclerView;
 
-    private MovieListAdapter mMoviesAdapter;
+    @Inject
+    MovieListAdapter mMoviesAdapter;
 
     @NonNull
     public static BaseFragment newInstance(@NonNull MovieSortType movieSortType) {
@@ -62,7 +66,14 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
-        App.get().component().inject(this);
+
+        DaggerActivityComponent
+                .builder()
+                .appComponent(App.get().component())
+                .fragmentManagerModule(new FragmentManagerModule(getFragmentManager()))
+                .activityContextModule(new ActivityContextModule(getActivity()))
+                .build().inject(this);
+
         moviesPresenter.setView(this);
 
         Bundle args = getArguments();
@@ -95,7 +106,6 @@ public class MovieListFragment extends BaseFragment implements MoviesView, Swipe
         mSwipeRefreshLayout.setColorSchemeResources(R.color.oker_dark, R.color.blue_dark);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        mMoviesAdapter = new MovieListAdapter();
         mMoviesAdapter.setInfiniteAdapterListener(new OnAdapterLastItemReachListener() {
             @Override
             public void onLastItemReached() {

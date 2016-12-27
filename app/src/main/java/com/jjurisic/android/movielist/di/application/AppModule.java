@@ -18,13 +18,11 @@
  *
  */
 
-package com.jjurisic.android.movielist.di.modules;
+package com.jjurisic.android.movielist.di.application;
 
 import android.app.Application;
 
 import com.jjurisic.android.movielist.App;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -43,7 +41,7 @@ public class AppModule {
     }
 
     @Provides
-    @Singleton
+    @ApplicationScope
     public Application provideApplication() {
         return app;
     }

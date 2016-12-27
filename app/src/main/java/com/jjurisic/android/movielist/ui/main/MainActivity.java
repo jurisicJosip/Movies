@@ -1,22 +1,21 @@
 package com.jjurisic.android.movielist.ui.main;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 
+import com.jjurisic.android.movielist.App;
 import com.jjurisic.android.movielist.R;
+import com.jjurisic.android.movielist.di.activity.ActivityContextModule;
+import com.jjurisic.android.movielist.di.activity.DaggerActivityComponent;
+import com.jjurisic.android.movielist.di.activity.FragmentManagerModule;
 import com.jjurisic.android.movielist.model.sort.MovieSortType;
 import com.jjurisic.android.movielist.ui.base.BaseActivity;
+import com.jjurisic.android.movielist.ui.movie.adapter.MoviesPagerAdapter;
 import com.jjurisic.android.movielist.ui.movie.fragment.MovieListFragment;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -35,10 +34,20 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.tabs)
     TabLayout tabLayout;
 
+    @Inject
+    MoviesPagerAdapter moviesPagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        DaggerActivityComponent
+                .builder()
+                .appComponent(App.get().component())
+                .fragmentManagerModule(new FragmentManagerModule(getSupportFragmentManager()))
+                .activityContextModule(new ActivityContextModule(this))
+                .build().inject(this);
 
         initUi();
     }
@@ -50,57 +59,12 @@ public class MainActivity extends BaseActivity {
         toolbar.setTitle(R.string.app_name);
         toolbar.setNavigationIcon(R.drawable.ic_movie_white_36dp);
 
-        MoviesPagerAdapter adapter = new MoviesPagerAdapter(getSupportFragmentManager(), this);
-        adapter.addFragment(MovieListFragment.newInstance(MovieSortType.TOP_RATED), MovieSortType.TOP_RATED);
-        adapter.addFragment(MovieListFragment.newInstance(MovieSortType.POPULAR), MovieSortType.POPULAR);
-        adapter.addFragment(MovieListFragment.newInstance(MovieSortType.UPCOMING), MovieSortType.UPCOMING);
+        moviesPagerAdapter.addFragment(MovieListFragment.newInstance(MovieSortType.TOP_RATED), MovieSortType.TOP_RATED);
+        moviesPagerAdapter.addFragment(MovieListFragment.newInstance(MovieSortType.POPULAR), MovieSortType.POPULAR);
+        moviesPagerAdapter.addFragment(MovieListFragment.newInstance(MovieSortType.UPCOMING), MovieSortType.UPCOMING);
 
-        viewPager.setAdapter(adapter);
+        viewPager.setAdapter(moviesPagerAdapter);
         viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
-    }
-
-    private static class MoviesPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragments = new ArrayList<>();
-        private final List<MovieSortType> mFragmentTitles = new ArrayList<>();
-
-        private final Context context;
-
-        public MoviesPagerAdapter(FragmentManager fm, Context context) {
-            super(fm);
-            this.context = context;
-        }
-
-        public void addFragment(Fragment fragment, MovieSortType title) {
-            mFragments.add(fragment);
-            mFragmentTitles.add(title);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragments.size();
-        }
-
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            MovieSortType type = mFragmentTitles.get(position);
-            switch (type) {
-                case POPULAR:
-                    return context.getString(R.string.popular);
-                case UPCOMING:
-                    return context.getString(R.string.upcoming);
-                case TOP_RATED:
-                    return context.getString(R.string.top_rated);
-
-                default:
-                    return null;
-            }
-        }
     }
 }

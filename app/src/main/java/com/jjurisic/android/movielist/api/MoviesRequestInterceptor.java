@@ -1,13 +1,18 @@
 package com.jjurisic.android.movielist.api;
 
-import retrofit.RequestInterceptor;
+import java.io.IOException;
+
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by Josip Jurisic
  */
-public class MoviesRequestInterceptor implements RequestInterceptor {
+public class MoviesRequestInterceptor implements Interceptor {
 
-    protected static final String KEY_API_KEY = "api_key";
+    private static final String KEY_API_KEY = "api_key";
 
     private final String apiKey;
 
@@ -16,7 +21,11 @@ public class MoviesRequestInterceptor implements RequestInterceptor {
     }
 
     @Override
-    public void intercept(RequestFacade request) {
-        request.addQueryParam(KEY_API_KEY, apiKey);
+    public Response intercept(Chain chain) throws IOException {
+        HttpUrl url = chain.request().url().newBuilder()
+                .addQueryParameter(KEY_API_KEY, apiKey).build();
+
+        Request request = chain.request().newBuilder().url(url).build();
+        return chain.proceed(request);
     }
 }

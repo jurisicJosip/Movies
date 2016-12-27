@@ -12,7 +12,6 @@ public class ImageUtils {
         return PATH_THUMB_URL + name;
     }
 
-
     public static String getImageFrom(String name) {
         return PATH_ORIGINAL_URL + name;
     }
