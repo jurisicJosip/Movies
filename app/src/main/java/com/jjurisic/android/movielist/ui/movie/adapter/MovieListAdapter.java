@@ -10,9 +10,7 @@ import android.view.ViewGroup;
 
 import com.jjurisic.android.movielist.R;
 import com.jjurisic.android.movielist.model.model.MovieModel;
-import com.jjurisic.android.movielist.presentation.MovieAdapterPresenter;
 import com.jjurisic.android.movielist.ui.base.adapter.InfiniteRecycleViewAdapter;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +23,10 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
     private final List<MovieModel> mDataSource = new ArrayList<>();
     private int totalItems = Integer.MAX_VALUE;
 
-    private final Picasso picasso;
     private final Context from;
-    private MovieAdapterPresenter presenter;
 
-    public MovieListAdapter(Context from, Picasso picasso, MovieAdapterPresenter presenter) {
-        this.picasso = picasso;
+    public MovieListAdapter(Context from) {
         this.from = from;
-        this.presenter = presenter;
     }
 
     private OnMovieItemClickListener mMovieItemClickListener;
@@ -55,7 +49,7 @@ public class MovieListAdapter extends InfiniteRecycleViewAdapter {
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(from).inflate(R.layout.list_item_movie, parent, false);
-        return new MovieViewHolder(view, picasso, presenter);
+        return new MovieViewHolder(view);
     }
 
     @Override

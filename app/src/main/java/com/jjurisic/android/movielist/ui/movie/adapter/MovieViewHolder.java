@@ -6,10 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.jjurisic.android.movielist.App;
 import com.jjurisic.android.movielist.R;
+import com.jjurisic.android.movielist.di.adapter.DaggerAdapterComponent;
 import com.jjurisic.android.movielist.model.model.MovieModel;
 import com.jjurisic.android.movielist.presentation.MovieAdapterPresenter;
 import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 /**
  * Created by JOSIP JURISIC
@@ -17,24 +21,29 @@ import com.squareup.picasso.Picasso;
 
 public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, MovieAdapterView {
 
-    private final MovieAdapterPresenter presenter;
-
     private final AppCompatTextView mMovieTitleTextView;
     private final AppCompatTextView mMovieDateTextView;
     private final ImageView mMovieImageView;
     private MovieListAdapter.OnMovieItemClickListener mMovieItemClickListener;
 
-    private final Picasso picasso;
+    @Inject
+    Picasso picasso;
 
-    public MovieViewHolder(View view, Picasso picasso, MovieAdapterPresenter presenter) {
+    @Inject
+    MovieAdapterPresenter presenter;
+
+    public MovieViewHolder(View view) {
         super(view);
-        this.picasso = picasso;
-        this.presenter = presenter;
-        presenter.setView(this);
+
+        DaggerAdapterComponent.builder()
+                .appComponent(App.get().component())
+                .build().inject(this);
 
         mMovieTitleTextView = (AppCompatTextView) view.findViewById(R.id.content_title);
         mMovieDateTextView = (AppCompatTextView) view.findViewById(R.id.content_date);
         mMovieImageView = (ImageView) view.findViewById(R.id.content_image);
+
+        presenter.setView(this);
 
         view.setOnClickListener(this);
     }

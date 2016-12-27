@@ -54,7 +54,6 @@ public class PresentationModule {
     }
 
     @Provides
-    @ActivityScope
     public MovieAdapterPresenter provideMovieAdapterPresenter() {
         return new MovieAdapterPresenterImpl();
     }

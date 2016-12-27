@@ -42,7 +42,7 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
     @Inject
     WebViewPresenter mWebViewPresenter;
 
-    public static Intent getLaunchIntent(Context from, String url, String title) {
+    public static Intent getLaunchIntent(Context from, String title, String url) {
         Intent intent = new Intent(from, WebViewActivity.class);
         intent.putExtra(KEY_URL, url);
         intent.putExtra(KEY_NAME, title);
@@ -53,6 +53,7 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
+        ButterKnife.bind(this);
 
         DaggerActivityComponent
                 .builder()
@@ -62,7 +63,6 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
                 .build().inject(this);
 
         mWebViewPresenter.setView(this);
-        ButterKnife.bind(this);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -79,6 +79,7 @@ public class WebViewActivity extends BaseActivity implements WebActivityView {
 
     @Override
     protected void initUi() {
+        mToolbar.setTitle("");
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

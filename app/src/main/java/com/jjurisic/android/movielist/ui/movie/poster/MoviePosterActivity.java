@@ -50,7 +50,7 @@ public class MoviePosterActivity extends BaseActivity implements MoviePosterView
     private String mMoviePosterUrl;
     private String mMovieTitle;
 
-    public static Intent getLaunchIntent(@NonNull Context from, String moviePosterUrl, @Nullable String title) {
+    public static Intent getLaunchIntent(@NonNull Context from, String title, @Nullable String moviePosterUrl) {
         Intent intent = new Intent(from, MoviePosterActivity.class);
         intent.putExtra(KEY_MOVIE_URL, moviePosterUrl);
         intent.putExtra(KEY_NAME, title);
